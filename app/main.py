@@ -44,6 +44,13 @@ async def lifespan(app: FastAPI):
             except Exception:
                 pass
         logger.info("Database tables initialized successfully.")
+
+        # Ensure default superadmin and platform seed data exists on first boot
+        try:
+            from scripts.seed_data import seed
+            await seed()
+        except Exception as seed_err:
+            logger.warning(f"Notice during startup seed: {seed_err}")
     except Exception as e:
         logger.warning(f"Database initialization notice: {e}")
 
