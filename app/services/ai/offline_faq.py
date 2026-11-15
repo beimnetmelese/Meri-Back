@@ -55,11 +55,14 @@ class OfflineFAQProvider(BaseAIProvider):
                 content = item.get("content", "")
                 if isinstance(content, dict):
                     content = " ".join(str(v) for v in content.values())
-                sentences = re.split(r"[.!?]\s+", str(content))
+                sentences = re.split(r"(?:[.!?]\s+|\n+)", str(content))
                 for s in sentences:
-                    s_words = set(re.findall(r"\w+", s.lower()))
+                    s_clean = s.strip().lstrip("-•* ")
+                    if not s_clean:
+                        continue
+                    s_words = set(re.findall(r"\w+", s_clean.lower()))
                     if words.intersection(s_words):
-                        matched_sentences.append(s.strip())
+                        matched_sentences.append(s_clean)
 
             if matched_sentences:
                 top_facts = ". ".join(matched_sentences[:3])

@@ -33,7 +33,7 @@ class AIOrchestrator:
         Returns: Tuple of (generated_text, provider_name_used)
         """
         # 1. Try Gemini
-        if settings.GEMINI_API_KEY:
+        if settings.GEMINI_API_KEY and not settings.GEMINI_API_KEY.startswith("YOUR_"):
             try:
                 res = await self.gemini.generate(
                     question=question,
@@ -47,7 +47,7 @@ class AIOrchestrator:
                 logger.warning(f"Gemini provider failed: {e}. Falling back to Groq.")
 
         # 2. Try Groq
-        if settings.GROQ_API_KEY:
+        if settings.GROQ_API_KEY and not settings.GROQ_API_KEY.startswith("YOUR_"):
             try:
                 res = await self.groq.generate(
                     question=question,

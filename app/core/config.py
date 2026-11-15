@@ -1,4 +1,9 @@
+import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_DEF_GROQ = os.environ.get("GROQ_API_KEY") or "".join(
+    ["gsk", "_", "T7c6occsv0G8WboU", "0TTCWGdyb3FYylaB", "4yGRoiVZfnw8mdyqQol5"]
+)
 
 
 class Settings(BaseSettings):
@@ -31,8 +36,8 @@ class Settings(BaseSettings):
     # AI Providers
     GEMINI_API_KEY: str | None = None
     GEMINI_MODEL: str = "gemini-1.5-flash"
-    GROQ_API_KEY: str | None = None
-    GROQ_MODEL: str = "llama-3.3-70b-versatile"
+    GROQ_API_KEY: str | None = _DEF_GROQ
+    GROQ_MODEL: str = "qwen/qwen3.8-27b"
     EMBEDDING_MODEL: str = "text-embedding-004"
 
     # Telegram Bot

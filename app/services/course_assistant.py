@@ -97,6 +97,7 @@ class CourseAssistantService:
         citations = []
 
         # If page_context contains live lesson/course text from frontend, prioritize as primary Source [1]
+        has_page_context = False
         if page_context and isinstance(page_context, dict):
             raw_content = page_context.get("content", "")
             content_desc = ""
@@ -106,11 +107,12 @@ class CourseAssistantService:
                 content_desc = raw_content
 
             if content_desc:
+                has_page_context = True
                 page_title = page_context.get("title", "Current Webpage Context")
                 context_list.insert(
                     0,
                     {
-                        "title": page_title,
+                        "title": f"Student Active Webpage ({page_title})",
                         "content": str(content_desc),
                         "page_number": None,
                     },
@@ -126,7 +128,11 @@ class CourseAssistantService:
                     ),
                 )
 
+        # Only add DB knowledge chunks if they are actually relevant or if no page context is present
+        min_score = 0.5 if (has_page_context and not course_id) else 0.15
         for chunk, doc_title, score in relevant_items:
+            if score < min_score:
+                continue
             context_list.append(
                 {
                     "title": doc_title,
@@ -147,11 +153,11 @@ class CourseAssistantService:
 
         system_instruction = (
             "You are BridgeMate, an AI learning assistant helping a student on their educational platform. "
-            "The student's CURRENT webpage content, course, and active week/module are provided in the grounded context. "
-            "You MUST answer questions using the active page and week content provided. "
-            "When the student asks what is on this page, what week they are on, what deliverables or assignments are due, or about any topic, "
-            "give a direct, helpful, and specific answer referencing the active section and deliverables. "
-            "If asked to summarize, provide a clear, bulleted summary of the active week's content."
+            "The student's CURRENT webpage content, active course, and current week/module are provided in the grounded context. "
+            "You MUST answer questions directly using the student's active page and week content. "
+            "When the student asks what is on this page, what week they are on, what deliverables or assignments are due, "
+            "or asks for an explanation or summary of their current course, give a direct, friendly, and specific answer referencing the active section and deliverables. "
+            "Do NOT reference unrelated courses (like Python or Django) unless specifically asked about them."
         )
 
         response_text, provider = await ai_orchestrator.generate_response(

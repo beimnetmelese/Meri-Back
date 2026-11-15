@@ -56,12 +56,13 @@ class GroqProvider(BaseAIProvider):
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
+            "User-Agent": "BridgeMate-AI/1.0",
         }
-        candidate_models = [self.model, "qwen/qwen3.8-27b", "openai/gpt-oss-120b", "llama-3.1-8b-instant", "llama-3.3-70b-versatile"]
+        candidate_models = ["qwen/qwen3.8-27b", self.model, "openai/gpt-oss-120b", "llama-3.3-70b-versatile"]
         # Deduplicate while preserving order
         candidate_models = list(dict.fromkeys(filter(None, candidate_models)))
 
-        async with httpx.AsyncClient(timeout=30.0) as client:
+        async with httpx.AsyncClient(timeout=15.0) as client:
             last_err = None
             for model_name in candidate_models:
                 payload = {
