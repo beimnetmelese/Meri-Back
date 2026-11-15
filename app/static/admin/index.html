@@ -1755,9 +1755,9 @@
 
   <!-- MODAL: LIVE HUMAN SUPPORT CHAT -->
   <div id="modalLiveChat" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-white rounded-2xl max-w-2xl w-full flex flex-col max-h-[90vh] shadow-2xl border border-slate-200 overflow-hidden animate-slide-up">
+    <div id="modalLiveChatCard" class="bg-white rounded-2xl max-w-4xl w-full flex flex-col max-h-[92vh] shadow-2xl border border-slate-200 overflow-hidden animate-slide-up transition-all duration-200">
       <!-- Modal Header -->
-      <div class="px-5 py-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+      <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800 shrink-0">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold shrink-0">
             <i data-lucide="headset" class="w-5 h-5"></i>
@@ -1776,6 +1776,11 @@
           </div>
         </div>
         <div class="flex items-center gap-2">
+          <!-- Tutor Screen Share Toggle -->
+          <button id="btnTutorShareScreen" onclick="toggleAdminScreenShare()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition">
+            <i data-lucide="monitor" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span id="btnTutorShareScreenText">Share My Screen</span>
+          </button>
           <button onclick="resolveCurrentLiveTicket()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5 transition">
             <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
             <span>Resolve Session</span>
@@ -1787,21 +1792,54 @@
       </div>
 
       <!-- Subject & Page Context Info Banner -->
-      <div class="bg-slate-50 px-5 py-2.5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
+      <div class="bg-slate-50 px-5 py-2 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 shrink-0">
         <div class="flex items-center gap-2">
           <span class="font-semibold text-slate-800">Topic:</span>
           <span id="liveChatSubject" class="font-medium text-slate-900 truncate max-w-xs sm:max-w-md"></span>
         </div>
         <div class="flex items-center gap-3">
-          <span id="liveChatScreenShareBadge" class="hidden items-center gap-1 text-[11px] font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">
-            <i data-lucide="monitor" class="w-3 h-3"></i> Screen Sharing Active
+          <span id="liveChatScreenShareBadge" class="hidden items-center gap-1.5 text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-300 px-2.5 py-0.5 rounded-full shadow-2xs">
+            <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+            <i data-lucide="monitor" class="w-3.5 h-3.5"></i> Screen Share Active
           </span>
           <span id="liveChatCreatedAt" class="text-slate-400 text-[11px]"></span>
         </div>
       </div>
 
+      <!-- Live Shared Screen Viewer Box (When screen sharing is active) -->
+      <div id="liveChatScreenViewerContainer" class="hidden bg-slate-950 border-b border-slate-800 flex flex-col relative transition-all duration-300 shrink-0">
+        <div class="px-4 py-1.5 bg-slate-900/95 text-white flex items-center justify-between border-b border-slate-800 text-xs shrink-0">
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+            <span class="font-bold text-slate-100 flex items-center gap-1.5">
+              <i data-lucide="tv" class="w-3.5 h-3.5 text-amber-400"></i>
+              <span id="liveChatScreenStreamTitle">Student Shared Screen (Live)</span>
+            </span>
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-1.5 py-0.2 rounded font-mono">LIVE HD</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="toggleScreenShareViewerExpand()" id="btnExpandScreenShare" class="text-slate-300 hover:text-white px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 transition text-[11px] flex items-center gap-1">
+              <i data-lucide="maximize-2" class="w-3 h-3"></i>
+              <span id="btnExpandScreenShareText">Expand</span>
+            </button>
+            <button onclick="toggleScreenShareViewerFullscreen()" class="text-slate-300 hover:text-white px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 transition text-[11px] flex items-center gap-1">
+              <i data-lucide="expand" class="w-3 h-3"></i>
+              <span>Fullscreen</span>
+            </button>
+          </div>
+        </div>
+        <div id="screenViewerFrameBox" class="relative w-full aspect-video max-h-72 sm:max-h-80 bg-black flex items-center justify-center overflow-hidden">
+          <img id="liveChatScreenImage" class="max-w-full max-h-full object-contain mx-auto transition-opacity duration-150" alt="Live Shared Screen" style="display: none;" />
+          <div id="liveChatScreenPlaceholder" class="flex flex-col items-center justify-center p-6 text-center text-slate-400">
+            <i data-lucide="monitor" class="w-10 h-10 text-slate-600 mb-2 animate-pulse"></i>
+            <span class="text-xs font-medium">Connecting to live student screen stream...</span>
+            <span class="text-[10px] text-slate-500 mt-0.5">Stream will appear automatically as frames are received</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Chat Transcript Area -->
-      <div id="liveChatMessagesContainer" class="flex-1 p-5 overflow-y-auto space-y-3 bg-slate-100/50 min-h-[300px] max-h-[420px]">
+      <div id="liveChatMessagesContainer" class="flex-1 p-5 overflow-y-auto space-y-3 bg-slate-100/50 min-h-[240px] max-h-[380px]">
         <!-- Messages rendered dynamically -->
       </div>
 
@@ -3338,6 +3376,157 @@ IMPORTANT: Save your secret key now. It will not be shown again!`);
       renderSupportDashboard();
     }
 
+    let liveScreenPollTimer = null;
+    let isScreenViewerExpanded = false;
+    let adminMediaStream = null;
+    let adminCaptureTimer = null;
+
+    async function pollLiveScreenFrame() {
+      if (!activeLiveTicketId) return;
+      try {
+        const res = await fetch(`/api/v1/support/tickets/${activeLiveTicketId}/screen-frame`, { headers: getAuthHeaders() });
+        if (!res.ok) return;
+        const data = await res.json();
+        const container = document.getElementById('liveChatScreenViewerContainer');
+        const img = document.getElementById('liveChatScreenImage');
+        const placeholder = document.getElementById('liveChatScreenPlaceholder');
+        const badge = document.getElementById('liveChatScreenShareBadge');
+        const streamTitle = document.getElementById('liveChatScreenStreamTitle');
+
+        if (data.active && data.frame) {
+          if (container) container.classList.remove('hidden');
+          if (badge) {
+            badge.classList.remove('hidden');
+            badge.classList.add('flex');
+          }
+          if (img) {
+            img.src = data.frame;
+            img.style.display = 'block';
+          }
+          if (placeholder) placeholder.style.display = 'none';
+          if (streamTitle) {
+            streamTitle.textContent = data.sender === 'admin' ? 'Your Shared Screen (Live)' : 'Student Shared Screen (Live)';
+          }
+        } else if (!data.active) {
+          if (!adminMediaStream) {
+            if (container) container.classList.add('hidden');
+            if (badge) {
+              badge.classList.add('hidden');
+              badge.classList.remove('flex');
+            }
+            if (img) {
+              img.src = '';
+              img.style.display = 'none';
+            }
+            if (placeholder) placeholder.style.display = 'flex';
+          }
+        }
+      } catch (err) {
+        // Silently retry next poll
+      }
+    }
+
+    function toggleScreenShareViewerExpand() {
+      const card = document.getElementById('modalLiveChatCard');
+      const box = document.getElementById('screenViewerFrameBox');
+      const text = document.getElementById('btnExpandScreenShareText');
+      isScreenViewerExpanded = !isScreenViewerExpanded;
+      if (isScreenViewerExpanded) {
+        if (card) {
+          card.classList.remove('max-w-4xl');
+          card.classList.add('max-w-6xl', 'w-[95vw]', 'max-h-[96vh]');
+        }
+        if (box) {
+          box.classList.remove('max-h-72', 'sm:max-h-80');
+          box.classList.add('max-h-[520px]');
+        }
+        if (text) text.textContent = 'Collapse';
+      } else {
+        if (card) {
+          card.classList.remove('max-w-6xl', 'w-[95vw]', 'max-h-[96vh]');
+          card.classList.add('max-w-4xl');
+        }
+        if (box) {
+          box.classList.remove('max-h-[520px]');
+          box.classList.add('max-h-72', 'sm:max-h-80');
+        }
+        if (text) text.textContent = 'Expand';
+      }
+    }
+
+    function toggleScreenShareViewerFullscreen() {
+      const box = document.getElementById('screenViewerFrameBox');
+      if (!box) return;
+      if (!document.fullscreenElement) {
+        box.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    async function toggleAdminScreenShare() {
+      if (!activeLiveTicketId) return;
+      const btnText = document.getElementById('btnTutorShareScreenText');
+      if (adminMediaStream) {
+        // Stop sharing
+        adminMediaStream.getTracks().forEach(t => t.stop());
+        adminMediaStream = null;
+        if (adminCaptureTimer) {
+          clearInterval(adminCaptureTimer);
+          adminCaptureTimer = null;
+        }
+        if (btnText) btnText.textContent = 'Share My Screen';
+        fetch(`/api/v1/support/tickets/${activeLiveTicketId}/screen-frame`, {
+          method: 'POST',
+          headers: { ...getAuthHeaders(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ active: false, frame: null, sender: 'admin' })
+        }).catch(() => {});
+      } else {
+        try {
+          adminMediaStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
+          if (btnText) btnText.textContent = 'Stop Sharing Screen';
+
+          const video = document.createElement('video');
+          video.muted = true;
+          video.playsInline = true;
+          video.srcObject = adminMediaStream;
+          await video.play();
+
+          const canvas = document.createElement('canvas');
+          const sendAdminFrame = async () => {
+            if (!adminMediaStream || !adminMediaStream.active) {
+              toggleAdminScreenShare();
+              return;
+            }
+            if (video.videoWidth > 0 && video.videoHeight > 0) {
+              const scale = Math.min(1, 960 / video.videoWidth);
+              const w = Math.round(video.videoWidth * scale);
+              const h = Math.round(video.videoHeight * scale);
+              canvas.width = w;
+              canvas.height = h;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(video, 0, 0, w, h);
+              const dataUrl = canvas.toDataURL('image/jpeg', 0.65);
+              fetch(`/api/v1/support/tickets/${activeLiveTicketId}/screen-frame`, {
+                method: 'POST',
+                headers: { ...getAuthHeaders(), 'Content-Type': 'application/json' },
+                body: JSON.stringify({ active: true, frame: dataUrl, sender: 'admin' })
+              }).catch(() => {});
+            }
+          };
+
+          adminCaptureTimer = setInterval(sendAdminFrame, 600);
+          sendAdminFrame();
+
+          adminMediaStream.getVideoTracks()[0].onended = () => {
+            toggleAdminScreenShare();
+          };
+        } catch (err) {
+          console.warn('Admin screen share cancelled or failed:', err);
+        }
+      }
+    }
+
     async function openLiveChat(ticketId) {
       activeLiveTicketId = ticketId;
       openModal('modalLiveChat');
@@ -3360,6 +3549,11 @@ IMPORTANT: Save your secret key now. It will not be shown again!`);
 
       if (liveChatPollTimer) clearInterval(liveChatPollTimer);
       liveChatPollTimer = setInterval(pollActiveLiveChat, 2000);
+
+      // Start screen frame polling
+      if (liveScreenPollTimer) clearInterval(liveScreenPollTimer);
+      liveScreenPollTimer = setInterval(pollLiveScreenFrame, 700);
+      pollLiveScreenFrame();
     }
 
     async function pollActiveLiveChat() {
@@ -3494,6 +3688,20 @@ IMPORTANT: Save your secret key now. It will not be shown again!`);
       if (liveChatPollTimer) {
         clearInterval(liveChatPollTimer);
         liveChatPollTimer = null;
+      }
+      if (liveScreenPollTimer) {
+        clearInterval(liveScreenPollTimer);
+        liveScreenPollTimer = null;
+      }
+      if (adminMediaStream) {
+        toggleAdminScreenShare();
+      }
+      const container = document.getElementById('liveChatScreenViewerContainer');
+      if (container) container.classList.add('hidden');
+      const img = document.getElementById('liveChatScreenImage');
+      if (img) {
+        img.src = '';
+        img.style.display = 'none';
       }
       activeLiveTicketId = null;
       closeModal('modalLiveChat');

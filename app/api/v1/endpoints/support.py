@@ -1,5 +1,7 @@
+import time
 import uuid
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, WebSocket
+from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -290,3 +292,93 @@ async def update_ticket_status(
     )
 
     return _to_ticket_response(ticket)
+
+
+# Live screen sharing in-memory frame cache per ticket
+# ticket_id -> {"frame": str, "active": bool, "sender": str, "updated_at": float}
+live_screen_frames: dict[str, dict] = {}
+
+
+class ScreenFramePayload(BaseModel):
+    frame: str | None = None
+    active: bool = True
+    sender: str = "learner"
+
+
+@router.post("/tickets/{id}/screen-frame")
+async def update_screen_frame(
+    id: str,
+    payload: ScreenFramePayload,
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Receives live screen frame from student or tutor.
+    Broadcasts via WebSocket and keeps in-memory for instant HTTP polling.
+    """
+    live_screen_frames[id] = {
+        "frame": payload.frame,
+        "active": payload.active,
+        "sender": payload.sender,
+        "updated_at": time.time(),
+    }
+
+    # Update ticket.screen_sharing_active in DB if changed
+    stmt = select(SupportTicket).where(SupportTicket.id == id)
+    res = await db.execute(stmt)
+    ticket = res.scalar_one_or_none()
+    if ticket and ticket.screen_sharing_active != payload.active:
+        ticket.screen_sharing_active = payload.active
+        await db.commit()
+
+    # Broadcast to room
+    await ws_manager.broadcast(
+        f"support_{id}",
+        {
+            "type": "screen_frame",
+            "ticket_id": id,
+            "active": payload.active,
+            "sender": payload.sender,
+            "frame": payload.frame,
+        },
+    )
+    return {"status": "ok", "active": payload.active}
+
+
+@router.get("/tickets/{id}/screen-frame")
+async def get_screen_frame(id: str):
+    """
+    Returns latest live screen frame for the ticket.
+    """
+    frame_data = live_screen_frames.get(id)
+    if not frame_data:
+        return {"active": False, "frame": None}
+    # If not updated for more than 20 seconds, mark inactive
+    if time.time() - frame_data.get("updated_at", 0) > 20:
+        frame_data["active"] = False
+    return frame_data
+
+
+@router.websocket("/tickets/{id}/ws")
+async def ticket_websocket_endpoint(websocket: WebSocket, id: str):
+    """
+    WebSocket endpoint for instant live chat & screen stream sync.
+    """
+    await ws_manager.connect(f"support_{id}", websocket)
+    try:
+        while True:
+            text = await websocket.receive_text()
+            import json
+            try:
+                data = json.loads(text)
+                if data.get("type") == "screen_frame":
+                    live_screen_frames[id] = {
+                        "frame": data.get("frame"),
+                        "active": data.get("active", True),
+                        "sender": data.get("sender", "learner"),
+                        "updated_at": time.time(),
+                    }
+                await ws_manager.broadcast(f"support_{id}", data)
+            except Exception:
+                pass
+    except Exception:
+        ws_manager.disconnect(f"support_{id}", websocket)
