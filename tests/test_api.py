@@ -15,9 +15,13 @@ async def test_health_and_root():
         data = resp.json()
         assert data["status"] == "healthy"
 
-        root_resp = await ac.get("/")
+        root_resp = await ac.get("/", headers={"Accept": "application/json"})
         assert root_resp.status_code == 200
         assert root_resp.json()["status"] == "operational"
+
+        browser_resp = await ac.get("/", headers={"Accept": "text/html"})
+        assert browser_resp.status_code == 200
+        assert "<!DOCTYPE html>" in browser_resp.text
 
 
 @pytest.mark.asyncio

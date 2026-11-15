@@ -64,6 +64,16 @@ async def seed():
                 platform_id=savanna_platform.id, domain="vercel.app", is_verified=True
             )
         )
+        session.add(
+            PlatformDomain(
+                platform_id=savanna_platform.id, domain="savana-three.vercel.app", is_verified=True
+            )
+        )
+        session.add(
+            PlatformDomain(
+                platform_id=savanna_platform.id, domain="meri-plugin.vercel.app", is_verified=True
+            )
+        )
 
         # Add configuration matching Frontend Specification Section 4
         config = PlatformConfiguration(

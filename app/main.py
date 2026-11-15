@@ -3,9 +3,9 @@ from contextlib import asynccontextmanager
 
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 import app.models  # Ensures all ORM models are registered in metadata
@@ -84,14 +84,31 @@ if admin_dir.exists():
     app.mount("/dashboard", StaticFiles(directory=str(admin_dir), html=True), name="dashboard")
 
 
-@app.get("/", tags=["Health"])
-async def root():
+@app.get("/", tags=["Portal"])
+async def root(request: Request):
+    accept = request.headers.get("accept", "")
+    admin_index = admin_dir / "index.html"
+
+    # Return operational JSON when explicitly requested via JSON Accept header
+    if "application/json" in accept and "text/html" not in accept:
+        return {
+            "service": settings.PROJECT_NAME,
+            "version": settings.VERSION,
+            "status": "operational",
+            "docs_url": "/docs",
+            "admin_hub": "/",
+        }
+
+    # Serve Admin Portal directly on base URL
+    if admin_index.exists():
+        return HTMLResponse(content=admin_index.read_text(encoding="utf-8"))
+
     return {
         "service": settings.PROJECT_NAME,
         "version": settings.VERSION,
         "status": "operational",
         "docs_url": "/docs",
-        "admin_hub": "/admin",
+        "admin_hub": "/",
     }
 
 

@@ -370,7 +370,12 @@
         </h3>
         <p class="text-xs text-slate-500 mt-1">Copy and paste this script tag into the HTML head or before the closing body tag of your learning platform.</p>
         <div class="mt-4 bg-slate-900 text-slate-100 p-4 rounded-xl font-mono text-xs overflow-x-auto relative group">
-          <pre id="embedSnippetCode">&lt;script src="http://localhost:5173/dist/meri.js" data-public-key="YOUR_PUBLIC_KEY" defer&gt;&lt;/script&gt;</pre>
+          <pre id="embedSnippetCode">&lt;script
+  src="https://meri-plugin.vercel.app/meri.js"
+  data-public-key="pk_live_savanna_sample_12345"
+  data-api-base="https://meri-back.onrender.com"
+  async
+&gt;&lt;/script&gt;</pre>
           <button onclick="copySnippet(this)" class="absolute right-3 top-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 border border-slate-700 transition">
             <i data-lucide="copy" class="w-3.5 h-3.5"></i>
             <span>Copy</span>
@@ -1961,7 +1966,7 @@ IMPORTANT: Save your secret key now. It will not be shown again!`);
       if (currentPlatform) {
         const snippet = document.getElementById('embedSnippetCode');
         if (snippet) {
-          snippet.textContent = `<script\n  src="http://localhost:5173/dist/meri.js"\n  data-public-key="${currentPlatform.public_key}"\n  async\n><\/script>`;
+          snippet.textContent = `<script\n  src="https://meri-plugin.vercel.app/meri.js"\n  data-public-key="${currentPlatform.public_key}"\n  data-api-base="${window.location.origin}"\n  async\n><\/script>`;
         }
       }
 
@@ -2583,9 +2588,11 @@ IMPORTANT: Save your secret key now. It will not be shown again!`);
     }
 
     function copyPlatformSnippet(publicKey, btnElement = null) {
+      const apiOrigin = window.location.origin.includes('localhost') ? 'https://meri-back.onrender.com' : window.location.origin;
       const snippet = `<script
-  src="http://localhost:5173/dist/meri.js"
+  src="https://meri-plugin.vercel.app/meri.js"
   data-public-key="${publicKey}"
+  data-api-base="${apiOrigin}"
   async
 ><\/script>`;
       copyToClipboard(snippet, btnElement);
