@@ -90,8 +90,9 @@ async def seed():
         print("👤 Seeding Users (Admin & Verified Learner)...")
         admin = User(
             email="admin@bridgemate.internal",
-            full_name="BridgeMate Administrator",
-            role="admin",
+            full_name="System SuperAdmin",
+            role="superadmin",
+            status="approved",
             hashed_password=hash_password("AdminPass123!"),
             is_active=True,
         )

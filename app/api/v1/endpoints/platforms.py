@@ -4,6 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.core.database import get_db
+from app.core.dependencies import get_current_user_optional, get_current_admin
+from app.models.user import User
 from app.core.security import (
     generate_public_key,
     generate_secret_key,
@@ -32,14 +34,17 @@ router = APIRouter()
 
 @router.get("", response_model=list[PlatformResponse])
 async def list_platforms(
+    current_user: User | None = Depends(get_current_user_optional),
     db: AsyncSession = Depends(get_db),
 ):
-    """Lists all registered platforms and their configuration."""
+    """Lists registered platforms. Scoped to assigned platform if logged in as platform_admin."""
     stmt = (
         select(Platform)
         .options(selectinload(Platform.configuration), selectinload(Platform.domains))
         .order_by(Platform.created_at.desc())
     )
+    if current_user and current_user.role == "platform_admin" and current_user.assigned_platform_id:
+        stmt = stmt.where(Platform.id == current_user.assigned_platform_id)
     res = await db.execute(stmt)
     platforms = res.scalars().all()
 

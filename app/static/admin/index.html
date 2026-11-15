@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BridgeMate Platform Hub — Administration & Customization</title>
+  <title>Meri (መሪ) Multi-Platform Portal — Administration & Governance</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
@@ -42,7 +42,119 @@
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col font-sans">
 
   <!-- Top Navigation Bar -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+  
+  <!-- VIEW 1: PUBLIC LANDING / HOMEPAGE -->
+  <div id="viewLanding" class="min-h-screen flex flex-col bg-slate-950 text-white font-sans selection:bg-emerald-500 selection:text-slate-950">
+    <!-- Landing Navigation -->
+    <nav class="border-b border-slate-800/80 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 font-bold text-lg">
+            መ
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-extrabold text-xl text-white tracking-tight">Meri <span class="text-emerald-400">(መሪ)</span></span>
+              <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Platform Portal</span>
+            </div>
+            <p class="text-xs text-slate-400">Context-Aware Multilingual AI Guide & Career Gateway</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button onclick="openModal('modalLogin')" class="text-xs sm:text-sm font-semibold text-slate-200 hover:text-white px-4 py-2 rounded-xl transition hover:bg-slate-800 border border-slate-700">
+            Login as Admin
+          </button>
+          <button onclick="openModal('modalRegisterAdmin')" class="text-xs sm:text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-4 py-2 rounded-xl shadow-lg shadow-emerald-500/25 transition">
+            Register as Platform Admin
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex flex-col justify-center items-center text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold mb-6">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        Multi-Tenant Institutional AI Ecosystem
+      </div>
+
+      <h1 class="text-4xl sm:text-6xl font-extrabold text-white tracking-tight max-w-4xl leading-tight mb-6">
+        Empower Every African Learner with <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-sky-400">Context-Aware AI</span>
+      </h1>
+
+      <p class="text-base sm:text-lg text-slate-300 max-w-2xl mb-12 leading-relaxed">
+        Plug Meri directly into your Learning Management System (LMS) or job portal. Institutional administrators get dedicated, isolated control over curriculum knowledge bases, brand themes, and learner support.
+      </p>
+
+      <!-- Action Choice Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl text-left mb-16">
+        <!-- Card 1: Existing Admins -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 hover:border-emerald-500/50 transition-all shadow-xl group">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-5 group-hover:scale-110 transition">
+            <i data-lucide="shield-check" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2">Platform Admin Portal</h3>
+          <p class="text-sm text-slate-400 mb-6 leading-relaxed">
+            Already registered and approved? Sign in to manage your institution's AI widget, customize branding colors, upload courses, and track student inquiries.
+          </p>
+          <button onclick="openModal('modalLogin')" class="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 px-4 rounded-xl border border-slate-700 transition">
+            <span>Sign In to Dashboard</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Card 2: New Admin Registration -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 hover:border-emerald-500/50 transition-all shadow-xl group relative overflow-hidden">
+          <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
+          <div class="w-12 h-12 rounded-xl bg-teal-500/10 text-teal-400 flex items-center justify-center mb-5 group-hover:scale-110 transition">
+            <i data-lucide="user-plus" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2">Register as Platform Admin</h3>
+          <p class="text-sm text-slate-400 mb-6 leading-relaxed">
+            Represent a university, bootcamp, or LMS? Submit an application to manage your institution. Applications are quickly reviewed and approved by the SuperAdmin.
+          </p>
+          <button onclick="openModal('modalRegisterAdmin')" class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold py-3 px-4 rounded-xl shadow-lg transition">
+            <span>Apply for Platform Account</span>
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Feature Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full max-w-4xl border-t border-slate-800/80 pt-10 text-center">
+        <div>
+          <div class="text-2xl font-black text-emerald-400 mb-1">🇪🇹 ⇄ 🇬🇧</div>
+          <div class="text-xs font-semibold text-white">Bilingual & Ethiopic</div>
+          <div class="text-[11px] text-slate-400">Amharic & English support</div>
+        </div>
+        <div>
+          <div class="text-2xl font-black text-emerald-400 mb-1">📖 RAG</div>
+          <div class="text-xs font-semibold text-white">Grounded Citations</div>
+          <div class="text-[11px] text-slate-400">Strict curriculum citations</div>
+        </div>
+        <div>
+          <div class="text-2xl font-black text-emerald-400 mb-1">🛡️ RBAC</div>
+          <div class="text-xs font-semibold text-white">Tenant Isolation</div>
+          <div class="text-[11px] text-slate-400">Admins see only their LMS</div>
+        </div>
+        <div>
+          <div class="text-2xl font-black text-emerald-400 mb-1">✅ SuperAdmin</div>
+          <div class="text-xs font-semibold text-white">Governance</div>
+          <div class="text-[11px] text-slate-400">Application review workflow</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
+      ALX Capstone Project — Track 3: Multilingual Assistant & Live Help • Meri (መሪ) Platform System
+    </footer>
+  </div>
+
+  <!-- VIEW 2: AUTHENTICATED DASHBOARD -->
+  <div id="viewDashboard" class="hidden min-h-screen flex flex-col font-sans">
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white shadow-md">
@@ -57,8 +169,8 @@
         </div>
       </div>
 
-      <!-- Center Platform Selector -->
-      <div class="flex items-center gap-3">
+      <!-- Center Platform Selector (SuperAdmin) -->
+      <div id="superadminPlatformControls" class="flex items-center gap-3">
         <label for="platformSelect" class="text-xs font-medium text-slate-600 hidden sm:inline">Active Platform:</label>
         <select id="platformSelect" onchange="onSelectPlatformChange()" class="text-sm bg-slate-100 hover:bg-slate-200/80 border border-slate-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-800">
           <option value="">Loading platforms...</option>
@@ -69,17 +181,26 @@
         </button>
       </div>
 
+      <!-- Scoped Platform Admin Indicator (Platform Admin) -->
+      <div id="scopedPlatformIndicator" class="hidden flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 border border-blue-200 text-blue-900 text-xs font-bold">
+        <i data-lucide="shield" class="w-4 h-4 text-blue-600"></i>
+        <span id="scopedPlatformNameText">Managing: Platform</span>
+      </div>
+
       <!-- Right Admin Profile & Status -->
       <div class="flex items-center gap-4">
-        <div class="hidden md:flex items-center gap-2 text-xs text-slate-600">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-          <span>API: Operational</span>
+        <div id="userRoleBadge" class="hidden sm:inline-flex px-2.5 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-purple-100 text-purple-800 border border-purple-200">
+          SuperAdmin
         </div>
         <div class="flex items-center gap-2 border-l border-slate-200 pl-4 text-xs">
-          <div class="w-7 h-7 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold">
+          <div id="userAvatarLetter" class="w-7 h-7 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold">
             A
           </div>
-          <span class="font-medium text-slate-700 hidden lg:inline">admin@bridgemate.internal</span>
+          <span id="userEmailText" class="font-medium text-slate-700 hidden lg:inline">admin@bridgemate.internal</span>
+          <button onclick="handleLogout()" title="Log Out" class="ml-2 text-slate-400 hover:text-red-600 transition flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-red-50 font-medium">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Logout</span>
+          </button>
         </div>
       </div>
     </div>
@@ -87,6 +208,11 @@
     <!-- Navigation Tabs -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-100">
       <nav class="flex space-x-8 overflow-x-auto text-sm font-medium text-slate-500">
+        <button onclick="switchTab('approvals')" id="tab-btn-approvals" class="py-3 px-1 hover:text-slate-900 flex items-center gap-2 relative">
+          <i data-lucide="user-check" class="w-4 h-4 text-amber-500"></i>
+          <span>Admin Approvals</span>
+          <span id="badgePendingCount" class="hidden px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500 text-white">0</span>
+        </button>
         <button onclick="switchTab('platforms')" id="tab-btn-platforms" class="py-3 px-1 tab-active flex items-center gap-2">
           <i data-lucide="globe" class="w-4 h-4"></i>
           <span>Platforms & Keys</span>
@@ -118,9 +244,78 @@
       </nav>
     </div>
   </header>
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- TAB 0: ADMIN APPROVALS & MULTI-TENANCY (SuperAdmin Only) -->
+    <section id="tab-approvals" class="space-y-6 hidden">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-xl font-bold text-slate-900">Platform Administrator Applications</h2>
+            <span class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-amber-100 text-amber-800 border border-amber-200">SuperAdmin Governance</span>
+          </div>
+          <p class="text-sm text-slate-500">Review, approve, or reject administrator applications from institutions. Approved admins can only view and manage their respective platform.</p>
+        </div>
+        <button onclick="loadPendingAdmins(); loadApprovedAdmins();" class="flex items-center gap-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-2 rounded-lg border border-slate-300 transition">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+          <span>Refresh</span>
+        </button>
+      </div>
 
-  <!-- Main Content Canvas -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Pending Approvals Card -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-slate-100 bg-amber-50/50 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+            <h3 class="font-bold text-slate-900 text-sm">Pending Approval Requests (<span id="pendingRequestsCountText">0</span>)</h3>
+          </div>
+          <span class="text-xs text-slate-500">Admins cannot log in until approved</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-600">
+            <thead class="bg-slate-50/75 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-200">
+              <tr>
+                <th class="py-3 px-4">Applicant Name</th>
+                <th class="py-3 px-4">Work Email</th>
+                <th class="py-3 px-4">Requested Platform / Institution</th>
+                <th class="py-3 px-4">Applied Date</th>
+                <th class="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="pendingAdminsTableBody" class="divide-y divide-slate-100">
+              <tr>
+                <td colspan="5" class="py-8 text-center text-slate-400">Loading pending applications...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Approved Platform Admins Card -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+          <h3 class="font-bold text-slate-900 text-sm">Approved Platform Administrators</h3>
+          <span class="text-xs text-slate-500">Active institutional managers with scoped access</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-600">
+            <thead class="bg-slate-50/75 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-200">
+              <tr>
+                <th class="py-3 px-4">Admin Name</th>
+                <th class="py-3 px-4">Email</th>
+                <th class="py-3 px-4">Assigned Platform</th>
+                <th class="py-3 px-4">Status</th>
+                <th class="py-3 px-4">Registered Date</th>
+              </tr>
+            </thead>
+            <tbody id="approvedAdminsTableBody" class="divide-y divide-slate-100">
+              <tr>
+                <td colspan="5" class="py-6 text-center text-slate-400">No approved platform admins yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
     <!-- TAB 1: PLATFORMS & KEYS -->
     <section id="tab-platforms" class="space-y-6">
@@ -140,16 +335,43 @@
         <!-- Rendered via JS -->
       </div>
 
+      <!-- Detailed Platform Table Overview -->
+      <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm mt-6">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+          <div>
+            <h3 class="text-sm font-bold text-slate-800">All Registered Platforms Overview</h3>
+            <p class="text-xs text-slate-500">Quick status and API credentials overview for all connected platforms</p>
+          </div>
+          <span id="platformsCountBadge" class="text-xs px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-bold">2 Platforms</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 text-slate-500 font-semibold text-xs border-b border-slate-200">
+              <tr>
+                <th class="py-3.5 px-4">Platform Name</th>
+                <th class="py-3.5 px-4">Primary Domain</th>
+                <th class="py-3.5 px-4">Public Embed Key</th>
+                <th class="py-3.5 px-4">Status</th>
+                <th class="py-3.5 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="platformsTableBody" class="divide-y divide-slate-100">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- Integration Code Snippet Helper -->
-      <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
         <h3 class="text-base font-semibold text-slate-900 flex items-center gap-2">
           <i data-lucide="code" class="w-5 h-5 text-emerald-600"></i>
           <span>Universal Embed Installation Snippet</span>
         </h3>
         <p class="text-xs text-slate-500 mt-1">Copy and paste this script tag into the HTML head or before the closing body tag of your learning platform.</p>
-        <div class="mt-4 bg-slate-900 text-slate-100 p-4 rounded-lg font-mono text-xs overflow-x-auto relative group">
-          <pre id="embedSnippetCode">&lt;script src="http://localhost:8000/static/meri.js" data-public-key="YOUR_PUBLIC_KEY" defer&gt;&lt;/script&gt;</pre>
-          <button onclick="copySnippet()" class="absolute right-3 top-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-2.5 py-1 rounded text-xs flex items-center gap-1 border border-slate-700">
+        <div class="mt-4 bg-slate-900 text-slate-100 p-4 rounded-xl font-mono text-xs overflow-x-auto relative group">
+          <pre id="embedSnippetCode">&lt;script src="http://localhost:5173/dist/meri.js" data-public-key="YOUR_PUBLIC_KEY" defer&gt;&lt;/script&gt;</pre>
+          <button onclick="copySnippet(this)" class="absolute right-3 top-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 border border-slate-700 transition">
             <i data-lucide="copy" class="w-3.5 h-3.5"></i>
             <span>Copy</span>
           </button>
@@ -165,15 +387,18 @@
           <p class="text-sm text-slate-500">Customize the appearance, welcome messages, and features of your BridgeMate assistant with real-time preview.</p>
         </div>
         <div class="flex items-center gap-3">
-          <button onclick="resetDefaultTheme()" class="px-3 py-1.5 text-xs text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded-lg hover:bg-slate-50">
+          <button onclick="resetDefaultTheme()" class="px-3 py-1.5 text-xs text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition">
             Reset Defaults
           </button>
-          <button onclick="savePluginConfig()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition">
+          <button onclick="savePlatformConfig()" class="btnSaveConfig flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition">
             <i data-lucide="save" class="w-4 h-4"></i>
-            <span>Save Configuration</span>
+            <span class="btnSaveConfigText">Save Configuration</span>
           </button>
         </div>
       </div>
+
+      <!-- Studio Notification Alert Banner for Instant Feedback -->
+      <div id="studioAlertBanner" class="hidden rounded-xl p-4 border transition-all"></div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <!-- Configuration Controls (Left 7 Cols) -->
@@ -288,6 +513,18 @@
               </label>
             </div>
           </div>
+
+          <!-- Bottom Save Action Bar -->
+          <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex items-center justify-between">
+            <div class="flex items-center gap-2 text-xs text-slate-500">
+              <i data-lucide="info" class="w-4 h-4 text-emerald-600"></i>
+              <span>Changes apply live immediately to all installed widgets.</span>
+            </div>
+            <button onclick="savePlatformConfig()" class="btnSaveConfig flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm transition">
+              <i data-lucide="save" class="w-4 h-4"></i>
+              <span class="btnSaveConfigText">Save Configuration</span>
+            </button>
+          </div>
         </div>
 
         <!-- Live Widget Preview Canvas (Right 5 Cols) -->
@@ -298,7 +535,7 @@
                 <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
                 <span class="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-                <span class="ml-2 font-mono text-[11px] text-slate-500">Live Preview: Savanna LMS</span>
+                <span id="previewSubtitleText" class="ml-2 font-mono text-[11px] text-slate-500">Live Preview: Savanna LMS</span>
               </div>
               <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px]">Real-Time</span>
             </div>
@@ -309,7 +546,7 @@
               <div class="bg-white px-4 py-2.5 border-b border-slate-200 flex items-center justify-between text-xs">
                 <div class="flex items-center gap-2">
                   <div class="w-5 h-5 bg-emerald-600 rounded"></div>
-                  <span class="font-bold text-slate-800">Savanna Learning</span>
+                  <span id="previewFakeHostTitle" class="font-bold text-slate-800">Savanna Learning</span>
                 </div>
                 <div class="flex gap-2 text-slate-400 text-[10px]">
                   <span>Courses</span>
@@ -655,8 +892,166 @@
     </section>
 
   </main>
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
+      Meri (መሪ) Context-Aware AI Platform Hub • Multi-Tenant RBAC System Active
+    </footer>
+  </div>
 
-  <!-- MODAL: REGISTER NEW PLATFORM -->
+  <!-- MODAL: ADMIN LOGIN -->
+  <div id="modalLogin" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+            <i data-lucide="log-in" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Sign In to Admin Portal</h3>
+            <p class="text-xs text-slate-500">SuperAdmin or Approved Platform Admin</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modalLogin')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Quick SuperAdmin demo fill button -->
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between">
+        <div class="text-xs text-slate-600">
+          <span class="font-bold text-slate-800">SuperAdmin Login:</span><br>
+          <code class="text-[11px] text-emerald-700">admin@bridgemate.internal</code>
+        </div>
+        <button type="button" onclick="fillSuperadminDemo()" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold px-2.5 py-1.5 rounded-lg transition">
+          Auto Fill
+        </button>
+      </div>
+
+      <!-- Login Alert / Error box -->
+      <div id="loginAlertBox" class="hidden p-3 rounded-xl text-xs"></div>
+
+      <form onsubmit="handleLogin(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Email Address</label>
+          <input type="email" id="login-email" required placeholder="admin@example.com" class="w-full text-sm bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Password</label>
+          <input type="password" id="login-password" required placeholder="••••••••••••" class="w-full text-sm bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+        </div>
+        <div class="pt-2 flex justify-between items-center">
+          <button type="button" onclick="closeModal('modalLogin'); openModal('modalRegisterAdmin')" class="text-emerald-700 hover:underline font-semibold text-xs">
+            Need an account? Apply here
+          </button>
+          <button type="submit" id="btnLoginSubmit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold shadow-md transition">
+            Sign In
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: REGISTER AS PLATFORM ADMIN -->
+  <div id="modalRegisterAdmin" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center font-bold">
+            <i data-lucide="user-plus" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Apply as Platform Administrator</h3>
+            <p class="text-xs text-slate-500">Subject to SuperAdmin review and approval</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modalRegisterAdmin')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- State A: Registration Form -->
+      <div id="regAdminFormContainer">
+        <div id="regAdminAlertBox" class="hidden p-3 rounded-xl text-xs mb-3"></div>
+
+        <form onsubmit="handleRegisterAdmin(event)" class="space-y-4 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Your Full Name</label>
+            <input type="text" id="regadmin-fullname" required placeholder="e.g. Dr. Almaz Tesfaye" class="w-full text-sm bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Institutional / Work Email</label>
+            <input type="email" id="regadmin-email" required placeholder="almaz@university.edu.et" class="w-full text-sm bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Password</label>
+            <input type="password" id="regadmin-password" required minlength="6" placeholder="At least 6 characters" class="w-full text-sm bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          </div>
+
+          <!-- Platform selection mode -->
+          <div class="pt-2 border-t border-slate-100 space-y-3">
+            <label class="block font-bold text-slate-800">Select Platform Scope:</label>
+            
+            <div class="space-y-2">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="regPlatformMode" value="existing" checked onchange="toggleRegPlatformInputs()" class="text-emerald-600 focus:ring-emerald-500">
+                <span class="text-xs font-medium text-slate-700">Apply to manage an already registered platform (e.g. Savanna LMS)</span>
+              </label>
+              
+              <div id="regExistingPlatBox" class="pl-5 pt-1">
+                <select id="regadmin-platform-id" class="w-full text-sm bg-slate-50 border border-slate-300 rounded-lg px-3 py-2">
+                  <option value="">Loading platforms...</option>
+                </select>
+              </div>
+
+              <label class="flex items-center gap-2 cursor-pointer pt-2">
+                <input type="radio" name="regPlatformMode" value="new" onchange="toggleRegPlatformInputs()" class="text-emerald-600 focus:ring-emerald-500">
+                <span class="text-xs font-medium text-slate-700">Register a brand new platform / school</span>
+              </label>
+
+              <div id="regNewPlatBox" class="pl-5 pt-1 space-y-2 hidden">
+                <div>
+                  <label class="block text-[11px] font-medium text-slate-600 mb-1">Institution / Platform Name</label>
+                  <input type="text" id="regadmin-new-name" placeholder="e.g. Addis Ababa Tech LMS" class="w-full text-sm bg-slate-50 border border-slate-300 rounded-lg px-3 py-2">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-medium text-slate-600 mb-1">Domain or LMS URL</label>
+                  <input type="text" id="regadmin-new-domain" placeholder="e.g. lms.aau.edu.et" class="w-full text-sm bg-slate-50 border border-slate-300 rounded-lg px-3 py-2">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-100 flex justify-between items-center">
+            <button type="button" onclick="closeModal('modalRegisterAdmin'); openModal('modalLogin')" class="text-emerald-700 hover:underline font-semibold text-xs">
+              Already have an account? Sign In
+            </button>
+            <button type="submit" id="btnRegAdminSubmit" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold px-5 py-2.5 rounded-xl shadow-md transition">
+              Submit Application
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- State B: Confirmation / Review Notice -->
+      <div id="regAdminSuccessContainer" class="hidden py-8 px-4 text-center space-y-4">
+        <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-inner ring-8 ring-emerald-50">
+          <i data-lucide="clock" class="w-8 h-8"></i>
+        </div>
+        <h3 class="text-lg font-bold text-slate-900">Application Submitted!</h3>
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-amber-900 text-xs leading-relaxed max-w-sm mx-auto">
+          <strong>The SuperAdmin will review and approve your application</strong> before you can use this account to login and start managing your respective platform.
+        </div>
+        <p class="text-xs text-slate-500 max-w-xs mx-auto">
+          Once approved by the SuperAdmin, you can log in with your credentials and access your platform's dashboard.
+        </p>
+        <div class="pt-4">
+          <button type="button" onclick="closeModal('modalRegisterAdmin'); resetRegForm();" class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow transition">
+            Back to Home
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- MODAL: REGISTER NEW PLATFORM -->
   <div id="modalRegisterPlatform" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
       <div class="flex items-center justify-between">
@@ -791,9 +1186,11 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
   <script>
-    // State
+    // Authentication & State
+    let authToken = localStorage.getItem('meri_admin_token') || null;
+    let currentUser = null;
     let platforms = [];
     let currentPlatform = null;
     let courses = [];
@@ -807,34 +1204,106 @@
       chat_button: '#16A34A'
     };
 
-    // Initialize application
+    function getAuthHeaders() {
+      const headers = { 'Content-Type': 'application/json' };
+      if (authToken) {
+        headers['Authorization'] = `Bearer ${authToken}`;
+      }
+      return headers;
+    }
+
+    // App Initialization
     document.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
-      await loadPlatforms();
+      await initAuth();
+    });
+
+    async function initAuth() {
+      if (!authToken) {
+        showLandingView();
+        await loadPublicPlatformsDropdown();
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/v1/auth/me', { headers: getAuthHeaders() });
+        if (res.ok) {
+          currentUser = await res.json();
+          showDashboardView();
+          await setupDashboardForUser();
+        } else {
+          // Token invalid or expired
+          authToken = null;
+          localStorage.removeItem('meri_admin_token');
+          currentUser = null;
+          showLandingView();
+          await loadPublicPlatformsDropdown();
+        }
+      } catch (err) {
+        console.error('Auth verification error:', err);
+        showLandingView();
+      }
+    }
+
+    function showLandingView() {
+      document.getElementById('viewLanding').classList.remove('hidden');
+      document.getElementById('viewDashboard').classList.add('hidden');
+      lucide.createIcons();
+    }
+
+    function showDashboardView() {
+      document.getElementById('viewLanding').classList.add('hidden');
+      document.getElementById('viewDashboard').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    async function setupDashboardForUser() {
+      if (!currentUser) return;
+
+      // Update User profile info
+      document.getElementById('userEmailText').textContent = currentUser.email || currentUser.full_name;
+      document.getElementById('userAvatarLetter').textContent = (currentUser.full_name || 'A')[0].toUpperCase();
+
+      const roleBadge = document.getElementById('userRoleBadge');
+      const superControls = document.getElementById('superadminPlatformControls');
+      const scopedIndicator = document.getElementById('scopedPlatformIndicator');
+      const approvalsBtn = document.getElementById('tab-btn-approvals');
+      const platformsBtn = document.getElementById('tab-btn-platforms');
+
+      if (currentUser.role === 'superadmin' || currentUser.role === 'admin') {
+        roleBadge.textContent = 'SUPERADMIN';
+        roleBadge.className = 'hidden sm:inline-flex px-2.5 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-purple-100 text-purple-800 border border-purple-200';
+        superControls.classList.remove('hidden');
+        scopedIndicator.classList.add('hidden');
+        approvalsBtn.classList.remove('hidden');
+        platformsBtn.classList.remove('hidden');
+
+        // Load platforms and approvals
+        await loadPlatforms();
+        await loadPendingAdmins();
+        await loadApprovedAdmins();
+        switchTab('approvals');
+      } else {
+        // Platform Admin
+        roleBadge.textContent = 'PLATFORM ADMIN';
+        roleBadge.className = 'hidden sm:inline-flex px-2.5 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-blue-100 text-blue-800 border border-blue-200';
+        superControls.classList.add('hidden');
+        scopedIndicator.classList.remove('hidden');
+        approvalsBtn.classList.add('hidden');
+        platformsBtn.classList.add('hidden');
+
+        document.getElementById('scopedPlatformNameText').textContent = `Managing: ${currentUser.assigned_platform_name || 'My Platform'}`;
+
+        await loadPlatforms();
+        switchTab('theming');
+      }
+
       await loadCourses();
       await loadDocuments();
       await loadFaqs();
       await loadJobs();
       await loadLearners();
       await loadTickets();
-    });
-
-    // Tab Navigation
-    function switchTab(tabId) {
-      const tabs = ['platforms', 'theming', 'knowledge', 'jobs', 'learners', 'support', 'analytics'];
-      tabs.forEach(t => {
-        const sec = document.getElementById(`tab-${t}`);
-        const btn = document.getElementById(`tab-btn-${t}`);
-        if (t === tabId) {
-          sec.classList.remove('hidden');
-          btn.classList.add('tab-active');
-          btn.classList.remove('hover:text-slate-900');
-        } else {
-          sec.classList.add('hidden');
-          btn.classList.remove('tab-active');
-          btn.classList.add('hover:text-slate-900');
-        }
-      });
       lucide.createIcons();
     }
 
@@ -852,256 +1321,554 @@
     function openCreateFaqModal() { openModal('modalCreateFaq'); }
     function openPostJobModal() { alert('Job posting modal: Use POST /api/v1/jobs'); }
 
-    // API: Platforms
-    async function loadPlatforms() {
-      try {
-        const res = await fetch('/api/v1/platforms');
-        if (res.ok) {
-          platforms = await res.json();
-          renderPlatformSelect();
-          renderPlatformCards();
-          if (platforms.length > 0 && !currentPlatform) {
-            selectPlatform(platforms[0].id);
-          }
-        }
-      } catch (e) {
-        console.error('Failed to load platforms', e);
+    // Toggle Registration Platform Selection Mode
+    function toggleRegPlatformInputs() {
+      const mode = document.querySelector('input[name="regPlatformMode"]:checked').value;
+      const existBox = document.getElementById('regExistingPlatBox');
+      const newBox = document.getElementById('regNewPlatBox');
+      if (mode === 'existing') {
+        existBox.classList.remove('hidden');
+        newBox.classList.add('hidden');
+      } else {
+        existBox.classList.add('hidden');
+        newBox.classList.remove('hidden');
       }
     }
 
-    function renderPlatformSelect() {
-      const select = document.getElementById('platformSelect');
-      select.innerHTML = '';
-      platforms.forEach(p => {
-        const opt = document.createElement('option');
-        opt.value = p.id;
-        opt.textContent = `${p.name} (${p.domain})`;
-        select.appendChild(opt);
-      });
+    function fillSuperadminDemo() {
+      document.getElementById('login-email').value = 'admin@bridgemate.internal';
+      document.getElementById('login-password').value = 'AdminPass123!';
     }
 
-    function renderPlatformCards() {
-      const container = document.getElementById('platformsContainer');
-      container.innerHTML = '';
-      platforms.forEach(p => {
-        const card = document.createElement('div');
-        card.className = "bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-4 hover:border-emerald-300 transition";
-        card.innerHTML = `
-          <div class="flex items-start justify-between">
-            <div>
-              <div class="flex items-center gap-2">
-                <h3 class="font-bold text-slate-900">${p.name}</h3>
-                <span class="px-2 py-0.5 text-[10px] font-bold rounded-full ${p.enabled ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
-                  ${p.enabled ? 'ACTIVE' : 'DISABLED'}
-                </span>
-              </div>
-              <p class="text-xs text-slate-500 font-mono mt-0.5">${p.domain}</p>
-            </div>
-            <button onclick="togglePlatformStatus('${p.id}', ${!p.enabled})" class="text-xs text-slate-500 hover:text-slate-800 font-medium">
-              ${p.enabled ? 'Disable' : 'Enable'}
-            </button>
-          </div>
+    function resetRegForm() {
+      document.getElementById('regAdminFormContainer').classList.remove('hidden');
+      document.getElementById('regAdminSuccessContainer').classList.add('hidden');
+      document.getElementById('regAdminAlertBox').classList.add('hidden');
+      document.getElementById('regadmin-fullname').value = '';
+      document.getElementById('regadmin-email').value = '';
+      document.getElementById('regadmin-password').value = '';
+      document.getElementById('regadmin-new-name').value = '';
+      document.getElementById('regadmin-new-domain').value = '';
+    }
 
-          <!-- Public Key -->
-          <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-            <div class="flex justify-between items-center text-[11px] text-slate-500 mb-1">
-              <span>Public Installation Key:</span>
-              <button onclick="copyToClipboard('${p.public_key}')" class="text-emerald-700 hover:underline flex items-center gap-1 font-semibold">
-                <i data-lucide="copy" class="w-3 h-3"></i> Copy
-              </button>
-            </div>
-            <code class="text-xs font-mono text-slate-800 break-all select-all">${p.public_key}</code>
-          </div>
+    // AUTH: Login Handler
+    async function handleLogin(e) {
+      e.preventDefault();
+      const alertBox = document.getElementById('loginAlertBox');
+      const submitBtn = document.getElementById('btnLoginSubmit');
+      alertBox.classList.add('hidden');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Verifying...';
 
-          <!-- Allowed Domains -->
-          <div>
-            <div class="text-[11px] font-semibold text-slate-600 mb-1">Authorized Origins:</div>
-            <div class="flex flex-wrap gap-1">
-              ${p.domains.map(d => `<span class="bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded text-[11px] font-mono">${d}</span>`).join('')}
-            </div>
-          </div>
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
 
-          <!-- Actions -->
-          <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
-            <button onclick="selectPlatform('${p.id}'); switchTab('theming')" class="text-xs text-emerald-700 hover:text-emerald-800 font-semibold flex items-center gap-1">
-              <i data-lucide="palette" class="w-3.5 h-3.5"></i> Customization Studio
-            </button>
-            <button onclick="rotateKey('${p.id}')" class="text-xs text-amber-700 hover:text-amber-800 font-semibold flex items-center gap-1">
-              <i data-lucide="key" class="w-3.5 h-3.5"></i> Rotate Secret Key
-            </button>
-          </div>
-        `;
-        container.appendChild(card);
+      try {
+        const res = await fetch('/api/v1/auth/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username_or_email: email, password: password })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          authToken = data.access_token;
+          localStorage.setItem('meri_admin_token', authToken);
+          closeModal('modalLogin');
+          document.getElementById('login-password').value = '';
+          await initAuth();
+        } else {
+          alertBox.className = 'p-3 rounded-xl text-xs bg-red-50 border border-red-200 text-red-800 font-medium';
+          alertBox.textContent = data.detail || 'Login failed. Please check credentials.';
+          alertBox.classList.remove('hidden');
+        }
+      } catch (err) {
+        alertBox.className = 'p-3 rounded-xl text-xs bg-red-50 border border-red-200 text-red-800 font-medium';
+        alertBox.textContent = 'Server error. Is the backend running?';
+        alertBox.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign In';
+      }
+    }
+
+    // AUTH: Platform Admin Registration
+    async function handleRegisterAdmin(e) {
+      e.preventDefault();
+      const alertBox = document.getElementById('regAdminAlertBox');
+      const submitBtn = document.getElementById('btnRegAdminSubmit');
+      alertBox.classList.add('hidden');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      const fullName = document.getElementById('regadmin-fullname').value.trim();
+      const email = document.getElementById('regadmin-email').value.trim();
+      const password = document.getElementById('regadmin-password').value;
+      const mode = document.querySelector('input[name="regPlatformMode"]:checked').value;
+
+      let platformId = null;
+      let requestedName = null;
+      let requestedDomain = null;
+
+      if (mode === 'existing') {
+        platformId = document.getElementById('regadmin-platform-id').value;
+        if (!platformId) {
+          alertBox.className = 'p-3 rounded-xl text-xs bg-red-50 border border-red-200 text-red-800 font-medium';
+          alertBox.textContent = 'Please select a platform to apply for.';
+          alertBox.classList.remove('hidden');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit Application';
+          return;
+        }
+      } else {
+        requestedName = document.getElementById('regadmin-new-name').value.trim();
+        requestedDomain = document.getElementById('regadmin-new-domain').value.trim();
+        if (!requestedName) {
+          alertBox.className = 'p-3 rounded-xl text-xs bg-red-50 border border-red-200 text-red-800 font-medium';
+          alertBox.textContent = 'Please enter a name for the new platform.';
+          alertBox.classList.remove('hidden');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit Application';
+          return;
+        }
+      }
+
+      try {
+        const res = await fetch('/api/v1/auth/register-admin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            full_name: fullName,
+            email: email,
+            password: password,
+            platform_id: platformId,
+            requested_platform_name: requestedName,
+            requested_platform_domain: requestedDomain
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          // Switch to Success State inside modal
+          document.getElementById('regAdminFormContainer').classList.add('hidden');
+          document.getElementById('regAdminSuccessContainer').classList.remove('hidden');
+          lucide.createIcons();
+        } else {
+          alertBox.className = 'p-3 rounded-xl text-xs bg-red-50 border border-red-200 text-red-800 font-medium';
+          alertBox.textContent = data.detail || 'Registration failed.';
+          alertBox.classList.remove('hidden');
+        }
+      } catch (err) {
+        alertBox.className = 'p-3 rounded-xl text-xs bg-red-50 border border-red-200 text-red-800 font-medium';
+        alertBox.textContent = 'Network error connecting to backend.';
+        alertBox.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Application';
+      }
+    }
+
+    function handleLogout() {
+      authToken = null;
+      currentUser = null;
+      localStorage.removeItem('meri_admin_token');
+      showLandingView();
+      loadPublicPlatformsDropdown();
+    }
+
+    // SUPERADMIN: Approvals Management
+    async function loadPendingAdmins() {
+      try {
+        const res = await fetch('/api/v1/auth/pending-admins', { headers: getAuthHeaders() });
+        if (res.ok) {
+          const pending = await res.json();
+          document.getElementById('pendingRequestsCountText').textContent = pending.length;
+          const badge = document.getElementById('badgePendingCount');
+          if (pending.length > 0) {
+            badge.textContent = pending.length;
+            badge.classList.remove('hidden');
+          } else {
+            badge.classList.add('hidden');
+          }
+
+          const tbody = document.getElementById('pendingAdminsTableBody');
+          tbody.innerHTML = '';
+          if (pending.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-400">No pending administrator applications. All applications have been reviewed.</td></tr>`;
+            return;
+          }
+
+          pending.forEach(u => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-amber-50/40 transition';
+            const platDisplay = u.assigned_platform_name
+              ? `<span class="font-bold text-slate-800">${u.assigned_platform_name}</span> (Existing)`
+              : u.requested_platform_name
+              ? `<span class="font-bold text-emerald-800">${u.requested_platform_name}</span> <span class="text-slate-400 font-mono text-[11px] block">${u.requested_platform_domain || ''}</span>`
+              : '<span class="text-slate-400">None specified</span>';
+
+            const dateStr = u.created_at ? new Date(u.created_at).toLocaleDateString() : 'Recent';
+
+            tr.innerHTML = `
+              <td class="py-3 px-4 font-semibold text-slate-800">${u.full_name}</td>
+              <td class="py-3 px-4 font-mono text-slate-600">${u.email || '—'}</td>
+              <td class="py-3 px-4">${platDisplay}</td>
+              <td class="py-3 px-4 text-slate-500">${dateStr}</td>
+              <td class="py-3 px-4 text-right space-x-2">
+                <button onclick="approveAdmin('${u.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg font-bold text-xs shadow-sm transition">
+                  Approve
+                </button>
+                <button onclick="rejectAdmin('${u.id}')" class="bg-slate-200 hover:bg-red-100 hover:text-red-700 text-slate-700 px-3 py-1.5 rounded-lg font-medium text-xs transition">
+                  Reject
+                </button>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+      } catch (err) {
+        console.error('Error loading pending admins:', err);
+      }
+    }
+
+    async function loadApprovedAdmins() {
+      try {
+        const res = await fetch('/api/v1/auth/approved-admins', { headers: getAuthHeaders() });
+        if (res.ok) {
+          const admins = await res.json();
+          const tbody = document.getElementById('approvedAdminsTableBody');
+          tbody.innerHTML = '';
+          if (admins.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400">No approved platform admins yet.</td></tr>`;
+            return;
+          }
+
+          admins.forEach(u => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-50 transition';
+            const platDisplay = u.assigned_platform_name
+              ? `<span class="font-bold text-slate-800">${u.assigned_platform_name}</span>`
+              : '<span class="text-slate-400">Unassigned</span>';
+            const dateStr = u.created_at ? new Date(u.created_at).toLocaleDateString() : '—';
+
+            tr.innerHTML = `
+              <td class="py-3 px-4 font-semibold text-slate-800">${u.full_name}</td>
+              <td class="py-3 px-4 font-mono text-slate-600">${u.email || '—'}</td>
+              <td class="py-3 px-4">${platDisplay}</td>
+              <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Approved</span></td>
+              <td class="py-3 px-4 text-slate-500">${dateStr}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+      } catch (err) {
+        console.error('Error loading approved admins:', err);
+      }
+    }
+
+    async function approveAdmin(adminId) {
+      if (!confirm('Approve this platform administrator? They will be granted scoped access to manage their platform.')) return;
+      try {
+        const res = await fetch(`/api/v1/auth/approve-admin/${adminId}`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+        });
+        if (res.ok) {
+          alert('Admin approved successfully!');
+          await loadPendingAdmins();
+          await loadApprovedAdmins();
+          await loadPlatforms();
+        } else {
+          const err = await res.json();
+          alert('Error: ' + (err.detail || 'Approval failed'));
+        }
+      } catch (e) {
+        alert('Server error approving admin.');
+      }
+    }
+
+    async function rejectAdmin(adminId) {
+      if (!confirm('Reject this application? The user will not be able to log in.')) return;
+      try {
+        const res = await fetch(`/api/v1/auth/reject-admin/${adminId}`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+        });
+        if (res.ok) {
+          alert('Application rejected.');
+          await loadPendingAdmins();
+        } else {
+          const err = await res.json();
+          alert('Error: ' + (err.detail || 'Rejection failed'));
+        }
+      } catch (e) {
+        alert('Server error rejecting admin.');
+      }
+    }
+
+    // Public Platforms Dropdown for Registration
+    async function loadPublicPlatformsDropdown() {
+      try {
+        const res = await fetch('/api/v1/platforms');
+        if (res.ok) {
+          const plats = await res.json();
+          const select = document.getElementById('regadmin-platform-id');
+          if (!select) return;
+          select.innerHTML = '<option value="">-- Choose an Existing Platform --</option>';
+          plats.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.id;
+            opt.textContent = `${p.name} (${p.domain})`;
+            select.appendChild(opt);
+          });
+        }
+      } catch (e) {
+        console.error('Error loading public platforms', e);
+      }
+    }
+
+    // Tab Navigation
+    function switchTab(tabId) {
+      const tabs = ['approvals', 'platforms', 'theming', 'knowledge', 'jobs', 'learners', 'support', 'analytics'];
+      tabs.forEach(t => {
+        const sec = document.getElementById(`tab-${t}`);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (!sec || !btn) return;
+
+        if (t === tabId) {
+          sec.classList.remove('hidden');
+          btn.classList.add('tab-active');
+          btn.classList.remove('hover:text-slate-900');
+        } else {
+          sec.classList.add('hidden');
+          btn.classList.remove('tab-active');
+          btn.classList.add('hover:text-slate-900');
+        }
       });
       lucide.createIcons();
     }
 
+    // API: Platforms
+    // API: Platforms
+    async function loadPlatforms(preferredPlatformId = null) {
+      try {
+        const res = await fetch('/api/v1/platforms', { headers: getAuthHeaders() });
+        if (res.ok) {
+          platforms = await res.json();
+          const select = document.getElementById('platformSelect');
+          if (select) select.innerHTML = '';
+          const regSelect = document.getElementById('regadmin-platform-id');
+          if (regSelect) regSelect.innerHTML = '<option value="">-- Choose an Existing Platform --</option>';
+
+          platforms.forEach((p) => {
+            if (select) {
+              const opt = document.createElement('option');
+              opt.value = p.id;
+              opt.textContent = `${p.name} (${p.domain})`;
+              select.appendChild(opt);
+            }
+
+            if (regSelect) {
+              const optReg = document.createElement('option');
+              optReg.value = p.id;
+              optReg.textContent = `${p.name} (${p.domain})`;
+              regSelect.appendChild(optReg);
+            }
+          });
+
+          if (platforms.length > 0) {
+            // Determine active platform:
+            // 1. Explicit preferredPlatformId (e.g. after save or user selection)
+            // 2. Previously selected currentPlatform.id if it still exists in platforms
+            // 3. Platform Admin's assigned_platform_id
+            // 4. Default to platforms[0]
+            const targetId = preferredPlatformId 
+              || (currentPlatform ? currentPlatform.id : null)
+              || (currentUser && currentUser.assigned_platform_id ? currentUser.assigned_platform_id : null)
+              || platforms[0].id;
+
+            currentPlatform = platforms.find(p => p.id === targetId) || platforms[0];
+
+            if (select) select.value = currentPlatform.id;
+            populatePlatformConfigUI(currentPlatform.configuration);
+            renderPlatforms();
+          } else {
+            renderPlatforms();
+          }
+        }
+      } catch (e) {
+        console.error('Error loading platforms', e);
+      }
+    }
+
     function onSelectPlatformChange() {
       const select = document.getElementById('platformSelect');
-      selectPlatform(select.value);
-    }
-
-    function selectPlatform(platformId) {
-      currentPlatform = platforms.find(p => p.id === platformId) || platforms[0];
-      if (!currentPlatform) return;
-
-      document.getElementById('platformSelect').value = currentPlatform.id;
-      document.getElementById('embedSnippetCode').textContent = `<script src="${window.location.origin}/static/meri.js" data-public-key="${currentPlatform.public_key}" defer><\/script>`;
-
-      // Populate Theming form
-      const cfg = currentPlatform.configuration || {};
-      const theme = cfg.theme || defaultTheme;
-      document.getElementById('cfg-color-primary').value = theme.primary || defaultTheme.primary;
-      document.getElementById('cfg-color-primary-text').value = theme.primary || defaultTheme.primary;
-      document.getElementById('cfg-color-secondary').value = theme.secondary || defaultTheme.secondary;
-      document.getElementById('cfg-color-secondary-text').value = theme.secondary || defaultTheme.secondary;
-      document.getElementById('cfg-color-chatbtn').value = theme.chat_button || defaultTheme.chat_button;
-      document.getElementById('cfg-color-chatbtn-text').value = theme.chat_button || defaultTheme.chat_button;
-      document.getElementById('cfg-color-bg').value = theme.background || defaultTheme.background;
-      document.getElementById('cfg-color-bg-text').value = theme.background || defaultTheme.background;
-
-      document.getElementById('cfg-platform-name').value = cfg.platform_name || currentPlatform.name;
-      document.getElementById('cfg-logo-url').value = (cfg.branding && cfg.branding.logo_url) || '';
-      document.getElementById('cfg-welcome-message').value = cfg.welcome_message || 'Hello! How can I assist your learning and career today?';
-      document.getElementById('cfg-position').value = cfg.position || 'bottom-right';
-      document.getElementById('cfg-language').value = cfg.language || 'en';
-
-      const feat = cfg.features || {};
-      document.getElementById('cfg-feat-voice').checked = feat.voice !== false;
-      document.getElementById('cfg-feat-human').checked = feat.human_support !== false;
-      document.getElementById('cfg-feat-simple').checked = feat.simple_mode !== false;
-      document.getElementById('cfg-feat-jobs').checked = feat.job_assistance !== false;
-      document.getElementById('cfg-feat-course').checked = feat.course_assistant !== false;
-
-      updateLivePreview();
-    }
-
-    // Live Preview Synchronization
-    function updateLivePreview() {
-      const primary = document.getElementById('cfg-color-primary').value;
-      const secondary = document.getElementById('cfg-color-secondary').value;
-      const chatbtn = document.getElementById('cfg-color-chatbtn').value;
-      const bg = document.getElementById('cfg-color-bg').value;
-      const name = document.getElementById('cfg-platform-name').value || 'Assistant';
-      const welcome = document.getElementById('cfg-welcome-message').value || 'Hello!';
-      const logo = document.getElementById('cfg-logo-url').value;
-
-      document.getElementById('cfg-color-primary-text').value = primary;
-      document.getElementById('cfg-color-secondary-text').value = secondary;
-      document.getElementById('cfg-color-chatbtn-text').value = chatbtn;
-      document.getElementById('cfg-color-bg-text').value = bg;
-
-      // Update Preview DOM
-      document.getElementById('previewLauncherBtn').style.backgroundColor = chatbtn;
-      document.getElementById('previewHeader').style.background = `linear-gradient(to right, ${primary}, ${secondary})`;
-      document.getElementById('previewSendBtn').style.backgroundColor = primary;
-      document.getElementById('previewPlatformName').textContent = name;
-      document.getElementById('previewWelcomeMessage').textContent = welcome;
-
-      if (logo) {
-        document.getElementById('previewLogo').src = logo;
+      const id = select ? select.value : null;
+      currentPlatform = platforms.find(p => p.id === id) || platforms[0] || null;
+      if (currentPlatform) {
+        populatePlatformConfigUI(currentPlatform.configuration);
+        showStudioAlert(`Active Platform Switched`, `Now editing configuration for <strong>${currentPlatform.name}</strong> (${currentPlatform.domain})`, 'info');
       }
     }
 
-    function syncColorFromText(type) {
-      if (type === 'primary') {
-        const val = document.getElementById('cfg-color-primary-text').value;
-        if (/^#[0-9A-F]{6}$/i.test(val)) {
-          document.getElementById('cfg-color-primary').value = val;
-          updateLivePreview();
-        }
-      } else if (type === 'secondary') {
-        const val = document.getElementById('cfg-color-secondary-text').value;
-        if (/^#[0-9A-F]{6}$/i.test(val)) {
-          document.getElementById('cfg-color-secondary').value = val;
-          updateLivePreview();
-        }
-      } else if (type === 'chatbtn') {
-        const val = document.getElementById('cfg-color-chatbtn-text').value;
-        if (/^#[0-9A-F]{6}$/i.test(val)) {
-          document.getElementById('cfg-color-chatbtn').value = val;
-          updateLivePreview();
-        }
-      } else if (type === 'bg') {
-        const val = document.getElementById('cfg-color-bg-text').value;
-        if (/^#[0-9A-F]{6}$/i.test(val)) {
-          document.getElementById('cfg-color-bg').value = val;
-          updateLivePreview();
-        }
+    function renderPlatforms() {
+      const container = document.getElementById('platformsContainer');
+      const tbody = document.getElementById('platformsTableBody');
+      const countBadge = document.getElementById('platformsCountBadge');
+
+      if (countBadge) {
+        countBadge.textContent = `${platforms.length} Platform${platforms.length === 1 ? '' : 's'}`;
       }
-    }
 
-    async function savePluginConfig() {
-      if (!currentPlatform) return;
-      const payload = {
-        platform_name: document.getElementById('cfg-platform-name').value,
-        theme: {
-          primary: document.getElementById('cfg-color-primary').value,
-          secondary: document.getElementById('cfg-color-secondary').value,
-          chat_button: document.getElementById('cfg-color-chatbtn').value,
-          background: document.getElementById('cfg-color-bg').value,
-          text: '#111827'
-        },
-        branding: {
-          logo_url: document.getElementById('cfg-logo-url').value || 'https://bridgemate.example.com/logo.png'
-        },
-        welcome_message: document.getElementById('cfg-welcome-message').value,
-        position: document.getElementById('cfg-position').value,
-        language: document.getElementById('cfg-language').value,
-        features: {
-          voice: document.getElementById('cfg-feat-voice').checked,
-          human_support: document.getElementById('cfg-feat-human').checked,
-          simple_mode: document.getElementById('cfg-feat-simple').checked,
-          job_assistance: document.getElementById('cfg-feat-jobs').checked,
-          course_assistant: document.getElementById('cfg-feat-course').checked
-        }
-      };
-
-      try {
-        const res = await fetch(`/api/v1/platforms/${currentPlatform.id}/plugin-config`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (res.ok) {
-          alert('Plugin configuration successfully saved! All installed widgets will reflect changes immediately.');
-          await loadPlatforms();
+      // 1. Render Cards Grid
+      if (container) {
+        container.innerHTML = '';
+        if (!platforms || platforms.length === 0) {
+          container.innerHTML = `
+            <div class="col-span-full bg-white rounded-2xl border-2 border-dashed border-slate-200 p-12 text-center">
+              <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-400 mb-3">
+                <i data-lucide="globe" class="w-6 h-6"></i>
+              </div>
+              <h3 class="text-base font-bold text-slate-800">No Platforms Registered</h3>
+              <p class="text-sm text-slate-500 mt-1">Register your first learning platform to generate embed keys.</p>
+              <button onclick="openRegisterPlatformModal()" class="mt-4 inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                <span>Register Platform</span>
+              </button>
+            </div>
+          `;
         } else {
-          alert('Failed to save configuration: ' + (await res.text()));
+          platforms.forEach(p => {
+            const themeColor = p.configuration?.theme?.primary || '#16A34A';
+            const card = document.createElement('div');
+            card.className = "bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition flex flex-col justify-between";
+            card.innerHTML = `
+              <div>
+                <div class="flex items-start justify-between mb-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-base shadow-sm" style="background-color: ${themeColor}">
+                      ${p.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                        ${p.name}
+                        ${p.enabled ? '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">Active</span>' : '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">Disabled</span>'}
+                      </h3>
+                      <p class="text-xs text-slate-500 font-mono mt-0.5 flex items-center gap-1">
+                        <i data-lucide="globe" class="w-3 h-3 text-slate-400"></i>
+                        <span>${p.domain}</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Public Embed Key Box -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 my-3">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Public Embed Key</span>
+                    <button onclick="copyToClipboard('${p.public_key}', this)" class="text-xs text-emerald-600 hover:text-emerald-700 font-semibold flex items-center gap-1 transition">
+                      <i data-lucide="copy" class="w-3 h-3"></i>
+                      <span>Copy</span>
+                    </button>
+                  </div>
+                  <code class="block font-mono text-xs text-slate-800 break-all select-all font-semibold bg-white p-2 rounded border border-slate-200">
+                    ${p.public_key}
+                  </code>
+                </div>
+
+                <!-- Active Theme & Status Info -->
+                <div class="flex items-center gap-2 text-xs text-slate-600 mb-4">
+                  <span class="text-slate-400">Theme:</span>
+                  <span class="inline-block w-3.5 h-3.5 rounded-full border border-slate-300 shadow-inner" style="background-color: ${themeColor}"></span>
+                  <span class="font-mono text-slate-700 text-xs">${themeColor}</span>
+                  ${p.configuration?.welcome_message ? `<span class="text-slate-300">|</span><span class="text-slate-500 truncate max-w-[130px]" title="${p.configuration.welcome_message}">"${p.configuration.welcome_message}"</span>` : ''}
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="pt-4 border-t border-slate-100 flex items-center gap-2">
+                <button onclick="selectPlatformAndStudio('${p.id}')" class="flex-1 flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-xs font-semibold shadow-sm transition">
+                  <i data-lucide="palette" class="w-3.5 h-3.5"></i>
+                  <span>Customize in Studio</span>
+                </button>
+                <button onclick="copyPlatformSnippet('${p.public_key}', this)" title="Copy Embed Script Tag" class="px-2.5 py-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-xs transition flex items-center gap-1">
+                  <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                  <span class="text-[11px] hidden sm:inline">Snippet</span>
+                </button>
+                <button onclick="rotateKeyForPlatform('${p.id}', '${p.name}')" title="Rotate API Keys" class="px-2.5 py-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-xs transition">
+                  <i data-lucide="key" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            `;
+            container.appendChild(card);
+          });
         }
-      } catch (e) {
-        alert('Network error saving plugin config: ' + e);
       }
+
+      // 2. Render Table Rows
+      if (tbody) {
+        tbody.innerHTML = '';
+        if (!platforms || platforms.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400">No platforms registered yet.</td></tr>`;
+        } else {
+          platforms.forEach(p => {
+            const tr = document.createElement('tr');
+            tr.className = "hover:bg-slate-50 transition";
+            tr.innerHTML = `
+              <td class="py-3.5 px-4 font-semibold text-slate-800 flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full inline-block" style="background-color: ${p.configuration?.theme?.primary || '#16A34A'}"></span>
+                <span>${p.name}</span>
+              </td>
+              <td class="py-3.5 px-4 font-mono text-slate-600 text-xs">${p.domain}</td>
+              <td class="py-3.5 px-4">
+                <div class="flex items-center gap-2">
+                  <code class="bg-slate-100 text-slate-800 px-2 py-0.5 rounded text-[11px] font-mono select-all">${p.public_key}</code>
+                  <button onclick="copyToClipboard('${p.public_key}', this)" class="text-slate-400 hover:text-slate-600 transition">
+                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+              </td>
+              <td class="py-3.5 px-4">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${p.enabled ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                  ${p.enabled ? 'Active' : 'Disabled'}
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-right space-x-2">
+                <button onclick="selectPlatformAndStudio('${p.id}')" class="inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-900 font-semibold text-xs transition">
+                  <i data-lucide="palette" class="w-3 h-3"></i>
+                  <span>Customize</span>
+                </button>
+                <button onclick="rotateKeyForPlatform('${p.id}', '${p.name}')" class="inline-flex items-center gap-1 text-slate-500 hover:text-slate-700 text-xs transition">
+                  <i data-lucide="key" class="w-3 h-3"></i>
+                  <span>Rotate</span>
+                </button>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+      }
+
+      lucide.createIcons();
     }
 
-    async function togglePlatformStatus(id, newStatus) {
-      try {
-        const res = await fetch(`/api/v1/platforms/${id}/status`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ enabled: newStatus })
-        });
-        if (res.ok) {
-          await loadPlatforms();
-        }
-      } catch (e) {
-        alert('Error updating status: ' + e);
-      }
+    // Alias for backwards compatibility
+    window.renderPlatformsTable = renderPlatforms;
+    window.renderPlatforms = renderPlatforms;
+
+    function selectPlatformAndStudio(id) {
+      const p = platforms.find(item => item.id === id);
+      if (!p) return;
+      currentPlatform = p;
+      const select = document.getElementById('platformSelect');
+      if (select) select.value = id;
+      populatePlatformConfigUI(p.configuration);
+      switchTab('theming');
+      showStudioAlert(`Loaded "${p.name}" in Studio`, `You can now customize appearance, welcome message, and feature toggles for this platform.`, 'info');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    async function rotateKey(id) {
-      if (!confirm('Are you sure you want to rotate the private integration key? Any backend service communicating with BridgeMate must be updated with the new key.')) return;
-      try {
-        const res = await fetch(`/api/v1/platforms/${id}/rotate-keys`, { method: 'POST' });
-        if (res.ok) {
-          const data = await res.json();
-          prompt('SAVE THIS NEW SECRET KEY NOW! It will not be shown again:', data.secret_key);
-        }
-      } catch (e) {
-        alert('Error rotating key: ' + e);
-      }
-    }
-
+    // Modal: Platform Registration
     async function handleRegisterPlatform(e) {
       e.preventDefault();
       const name = document.getElementById('reg-name').value;
@@ -1114,53 +1881,387 @@
       try {
         const res = await fetch('/api/v1/platforms', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name,
-            domain,
-            allowed_domains: allowed
-          })
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ name, domain, allowed_domains: allowed })
         });
         if (res.ok) {
-          const data = await res.json();
+          const result = await res.json();
+          alert(`Platform Created Successfully!
+
+Public Key: ${result.public_key}
+Secret Key: ${result.secret_key}
+
+IMPORTANT: Save your secret key now. It will not be shown again!`);
           closeModal('modalRegisterPlatform');
-          prompt(`Platform successfully registered!\n\nPUBLIC KEY:\n${data.public_key}\n\nSAVE THIS PRIVATE SECRET KEY (Shown once!):\n${data.secret_key}`, data.secret_key);
-          await loadPlatforms();
+          await loadPlatforms(result.id);
         } else {
-          alert('Failed to register: ' + (await res.text()));
+          const err = await res.json();
+          alert('Error registering platform: ' + (err.detail || 'Unknown error'));
         }
       } catch (err) {
         alert('Error: ' + err);
       }
     }
 
-    // API: Courses & Documents
+        // Studio UI Population & Real-time Live Theming
+    function populatePlatformConfigUI(cfg) {
+      const c = cfg || (currentPlatform ? currentPlatform.configuration : null) || {
+        platform_name: currentPlatform ? currentPlatform.name : 'Savanna LMS',
+        theme: defaultTheme,
+        branding: { logo_url: '' },
+        welcome_message: 'Hello! How can I assist your studies or career today?',
+        language: 'en',
+        position: 'bottom-right',
+        features: { voice: true, human_support: true, simple_mode: true, job_assistance: true, course_assistant: true }
+      };
+
+      const theme = c.theme || defaultTheme;
+      const branding = c.branding || {};
+      const features = c.features || {};
+
+      const setVal = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val || '';
+      };
+      const setCheck = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.checked = !!val;
+      };
+
+      setVal('cfg-platform-name', c.platform_name || (currentPlatform ? currentPlatform.name : 'Savanna LMS'));
+      
+      const primary = theme.primary || defaultTheme.primary;
+      setVal('cfg-color-primary', primary);
+      setVal('cfg-color-primary-text', primary);
+
+      const secondary = theme.secondary || defaultTheme.secondary;
+      setVal('cfg-color-secondary', secondary);
+      setVal('cfg-color-secondary-text', secondary);
+
+      const chatbtn = theme.chat_button || defaultTheme.chat_button;
+      setVal('cfg-color-chatbtn', chatbtn);
+      setVal('cfg-color-chatbtn-text', chatbtn);
+
+      const bg = theme.background || defaultTheme.background;
+      setVal('cfg-color-bg', bg);
+      setVal('cfg-color-bg-text', bg);
+
+      setVal('cfg-logo-url', branding.logo_url || '');
+      setVal('cfg-welcome-message', c.welcome_message || 'Hello! How can I assist your studies or career today?');
+      setVal('cfg-language', c.language || 'en');
+      setVal('cfg-position', c.position || 'bottom-right');
+
+      setCheck('cfg-feat-voice', features.voice !== false);
+      setCheck('cfg-feat-human', features.human_support !== false);
+      setCheck('cfg-feat-simple', features.simple_mode !== false);
+      setCheck('cfg-feat-jobs', features.job_assistance !== false);
+      setCheck('cfg-feat-course', features.course_assistant !== false);
+
+      // Update embed snippet
+      if (currentPlatform) {
+        const snippet = document.getElementById('embedSnippetCode');
+        if (snippet) {
+          snippet.textContent = `<script\n  src="http://localhost:5173/dist/meri.js"\n  data-public-key="${currentPlatform.public_key}"\n  async\n><\/script>`;
+        }
+      }
+
+      updateLivePreview();
+    }
+
+    function syncColorFromText(type) {
+      const textEl = document.getElementById(`cfg-color-${type}-text`);
+      const pickerEl = document.getElementById(`cfg-color-${type}`);
+      if (textEl && pickerEl && /^#[0-9A-Fa-f]{6}$/.test(textEl.value.trim())) {
+        pickerEl.value = textEl.value.trim();
+      }
+      updateLivePreview();
+    }
+
+    function resetDefaultTheme() {
+      const setVal = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+      };
+      setVal('cfg-color-primary', '#16A34A');
+      setVal('cfg-color-primary-text', '#16A34A');
+      setVal('cfg-color-secondary', '#14532D');
+      setVal('cfg-color-secondary-text', '#14532D');
+      setVal('cfg-color-chatbtn', '#16A34A');
+      setVal('cfg-color-chatbtn-text', '#16A34A');
+      setVal('cfg-color-bg', '#FFFFFF');
+      setVal('cfg-color-bg-text', '#FFFFFF');
+      updateLivePreview();
+    }
+
+    function updateLivePreview() {
+      const getVal = (id, fallback) => {
+        const el = document.getElementById(id);
+        return (el && el.value) ? el.value : fallback;
+      };
+
+      const primary = getVal('cfg-color-primary', '#16A34A');
+      const secondary = getVal('cfg-color-secondary', '#14532D');
+      const chatbtn = getVal('cfg-color-chatbtn', primary);
+      const bg = getVal('cfg-color-bg', '#FFFFFF');
+      const name = getVal('cfg-platform-name', currentPlatform ? currentPlatform.name : 'Savanna LMS');
+      const welcome = getVal('cfg-welcome-message', 'Hello! How can I assist your studies or career today?');
+      const logo = getVal('cfg-logo-url', '');
+      const position = getVal('cfg-position', 'bottom-right');
+
+      // Sync color text inputs
+      const syncText = (idText, val) => {
+        const el = document.getElementById(idText);
+        if (el && document.activeElement !== el) el.value = val;
+      };
+      syncText('cfg-color-primary-text', primary);
+      syncText('cfg-color-secondary-text', secondary);
+      syncText('cfg-color-chatbtn-text', chatbtn);
+      syncText('cfg-color-bg-text', bg);
+
+      // Preview Elements
+      const prevHeader = document.getElementById('previewHeader');
+      if (prevHeader) prevHeader.style.backgroundColor = primary;
+
+      const prevLauncher = document.getElementById('previewLauncherBtn');
+      if (prevLauncher) {
+        prevLauncher.style.backgroundColor = chatbtn;
+        if (position === 'bottom-left' || position === 'top-left') {
+          prevLauncher.style.right = 'auto';
+          prevLauncher.style.left = '16px';
+        } else {
+          prevLauncher.style.left = 'auto';
+          prevLauncher.style.right = '16px';
+        }
+      }
+
+      const prevWindow = document.getElementById('previewWidgetWindow');
+      if (prevWindow) {
+        if (position === 'bottom-left' || position === 'top-left') {
+          prevWindow.style.right = 'auto';
+          prevWindow.style.left = '16px';
+        } else {
+          prevWindow.style.left = 'auto';
+          prevWindow.style.right = '16px';
+        }
+      }
+
+      const prevName = document.getElementById('previewPlatformName');
+      if (prevName) prevName.textContent = name;
+
+      const prevSub = document.getElementById('previewSubtitleText');
+      if (prevSub) prevSub.textContent = `Live Preview: ${name}`;
+
+      const prevHost = document.getElementById('previewFakeHostTitle');
+      if (prevHost) prevHost.textContent = name;
+
+      const prevWelcome = document.getElementById('previewWelcomeMessage');
+      if (prevWelcome) prevWelcome.textContent = welcome;
+
+      const prevLogo = document.getElementById('previewLogo');
+      if (prevLogo) {
+        if (logo && logo.startsWith('http')) {
+          prevLogo.src = logo;
+          prevLogo.style.display = 'block';
+        } else {
+          prevLogo.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${primary.replace('#','')}&color=fff`;
+        }
+      }
+
+      const prevSend = document.getElementById('previewSendBtn');
+      if (prevSend) prevSend.style.backgroundColor = primary;
+    }
+
+    // Aliases so all button handlers and events work interchangeably
+    window.updateThemePreview = updateLivePreview;
+    window.updateLivePreview = updateLivePreview;
+    window.syncColorFromText = syncColorFromText;
+    window.resetDefaultTheme = resetDefaultTheme;
+
+    // Studio Notification Alert Function
+    function showStudioAlert(title, message, type = 'success') {
+      const banner = document.getElementById('studioAlertBanner');
+      if (!banner) return;
+
+      const isSuccess = type === 'success';
+      const isInfo = type === 'info';
+
+      let bgBorderText = isSuccess 
+        ? 'bg-emerald-50 border-emerald-300 text-emerald-900' 
+        : (isInfo ? 'bg-blue-50 border-blue-300 text-blue-900' : 'bg-rose-50 border-rose-300 text-rose-900');
+
+      let iconName = isSuccess ? 'check-circle' : (isInfo ? 'info' : 'alert-triangle');
+      let iconColor = isSuccess ? 'text-emerald-600' : (isInfo ? 'text-blue-600' : 'text-rose-600');
+
+      banner.className = `rounded-xl p-4 border flex items-center justify-between shadow-sm transition-all duration-300 ${bgBorderText}`;
+      banner.innerHTML = `
+        <div class="flex items-center gap-3">
+          <i data-lucide="${iconName}" class="w-5 h-5 flex-shrink-0 ${iconColor}"></i>
+          <div>
+            <p class="font-bold text-sm">${title}</p>
+            ${message ? `<p class="text-xs mt-0.5 opacity-90">${message}</p>` : ''}
+          </div>
+        </div>
+        <button onclick="document.getElementById('studioAlertBanner').classList.add('hidden')" class="p-1 rounded-md hover:bg-black/5 opacity-70 hover:opacity-100 transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      `;
+      banner.classList.remove('hidden');
+      lucide.createIcons();
+
+      if (window._studioAlertTimer) clearTimeout(window._studioAlertTimer);
+      window._studioAlertTimer = setTimeout(() => {
+        banner.classList.add('hidden');
+      }, 7000);
+    }
+
+    async function savePlatformConfig() {
+      // 1. Fallback to active platform if null
+      if (!currentPlatform) {
+        if (platforms && platforms.length > 0) {
+          const selectVal = document.getElementById('platformSelect')?.value;
+          currentPlatform = platforms.find(p => p.id === selectVal) || platforms[0];
+        }
+      }
+
+      if (!currentPlatform) {
+        showStudioAlert('No Platform Selected', 'Please register or select a platform first.', 'error');
+        return;
+      }
+
+      const saveBtns = document.querySelectorAll('.btnSaveConfig');
+      const saveBtnTexts = document.querySelectorAll('.btnSaveConfigText');
+
+      saveBtns.forEach(b => {
+        b.disabled = true;
+        b.classList.add('opacity-75');
+      });
+      saveBtnTexts.forEach(t => {
+        t.innerHTML = '<span class="inline-flex items-center gap-1.5"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Saving...</span>';
+      });
+      lucide.createIcons();
+
+      const getVal = (id, fallback) => {
+        const el = document.getElementById(id);
+        return (el && el.value) ? el.value : fallback;
+      };
+      const getCheck = (id) => {
+        const el = document.getElementById(id);
+        return el ? el.checked : true;
+      };
+
+      const primary = getVal('cfg-color-primary', '#16A34A');
+      const secondary = getVal('cfg-color-secondary', '#14532D');
+      const chatbtn = getVal('cfg-color-chatbtn', primary);
+      const bg = getVal('cfg-color-bg', '#FFFFFF');
+      const platName = getVal('cfg-platform-name', currentPlatform.name);
+      const welcomeMsg = getVal('cfg-welcome-message', 'Hello! How can I assist your studies or career today?');
+
+      const payload = {
+        platform_name: platName,
+        theme: {
+          primary: primary,
+          secondary: secondary,
+          background: bg,
+          text: '#111827',
+          chat_button: chatbtn
+        },
+        branding: {
+          logo_url: getVal('cfg-logo-url', '')
+        },
+        welcome_message: welcomeMsg,
+        language: getVal('cfg-language', 'en'),
+        position: getVal('cfg-position', 'bottom-right'),
+        features: {
+          voice: getCheck('cfg-feat-voice'),
+          human_support: getCheck('cfg-feat-human'),
+          simple_mode: getCheck('cfg-feat-simple'),
+          job_assistance: getCheck('cfg-feat-jobs'),
+          course_assistant: getCheck('cfg-feat-course')
+        }
+      };
+
+      try {
+        const res = await fetch(`/api/v1/platforms/${currentPlatform.id}/plugin-config`, {
+          method: 'PATCH',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          const updated = await res.json();
+          currentPlatform.configuration = updated;
+          currentPlatform.name = updated.platform_name || platName;
+
+          // Show immediate, prominent green success alert banner!
+          showStudioAlert(
+            `Configuration for "${currentPlatform.name}" Saved!`,
+            `Theme colors (${primary}), greeting message, and feature toggles have been successfully persisted in the database and are now live for all learners on this platform.`,
+            'success'
+          );
+
+          saveBtnTexts.forEach(t => {
+            t.innerHTML = '<span class="inline-flex items-center gap-1.5"><i data-lucide="check" class="w-4 h-4 text-white"></i> Saved!</span>';
+          });
+
+          // Re-sync platforms list without losing current active selection
+          await loadPlatforms(currentPlatform.id);
+          updateLivePreview();
+        } else {
+          const err = await res.json();
+          showStudioAlert('Error Saving Configuration', err.detail || 'Could not update platform configuration.', 'error');
+          saveBtnTexts.forEach(t => { t.textContent = 'Save Configuration'; });
+        }
+      } catch (err) {
+        showStudioAlert('Network Error', err.message || 'Failed to connect to the backend server.', 'error');
+        saveBtnTexts.forEach(t => { t.textContent = 'Save Configuration'; });
+      } finally {
+        saveBtns.forEach(b => {
+          b.disabled = false;
+          b.classList.remove('opacity-75');
+        });
+        setTimeout(() => {
+          saveBtnTexts.forEach(t => {
+            if (t.textContent.includes('Saved')) {
+              t.textContent = 'Save Configuration';
+            }
+          });
+          lucide.createIcons();
+        }, 3000);
+        lucide.createIcons();
+      }
+    }
+
+    window.savePlatformConfig = savePlatformConfig;
+    window.savePluginConfig = savePlatformConfig;
+
+    // Courses & Knowledge
     async function loadCourses() {
       try {
-        const res = await fetch('/api/v1/courses');
+        const res = await fetch('/api/v1/knowledge/courses', { headers: getAuthHeaders() });
         if (res.ok) {
           courses = await res.json();
-          const list = document.getElementById('coursesList');
-          list.innerHTML = '';
-          const select = document.getElementById('upload-course-select');
-          select.innerHTML = '<option value="">Select course...</option>';
+          const cont = document.getElementById('coursesContainer');
+          const docCourseSelect = document.getElementById('doc-course-id');
+          cont.innerHTML = '';
+          docCourseSelect.innerHTML = '<option value="">-- Select Course --</option>';
 
           courses.forEach(c => {
-            const item = document.createElement('div');
-            item.className = "py-3 flex items-center justify-between text-xs";
-            item.innerHTML = `
-              <div>
-                <div class="font-bold text-slate-800">${c.course_code}: ${c.title}</div>
-                <div class="text-slate-500 text-[11px]">${c.instructor_name || 'Department Faculty'}</div>
-              </div>
-              <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-semibold">Active</span>
-            `;
-            list.appendChild(item);
-
             const opt = document.createElement('option');
             opt.value = c.id;
-            opt.textContent = `${c.course_code} - ${c.title}`;
-            select.appendChild(opt);
+            opt.textContent = `${c.code}: ${c.title}`;
+            docCourseSelect.appendChild(opt);
+
+            const card = document.createElement('div');
+            card.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2";
+            card.innerHTML = `
+              <div class="flex justify-between items-start">
+                <span class="bg-emerald-100 text-emerald-800 font-mono text-xs px-2 py-0.5 rounded font-bold">${c.code}</span>
+                <span class="text-xs text-slate-400">${c.documents_count || 0} Docs</span>
+              </div>
+              <h4 class="font-bold text-slate-900">${c.title}</h4>
+              <p class="text-xs text-slate-500">${c.instructor ? 'Instructor: ' + c.instructor : ''}</p>
+            `;
+            cont.appendChild(card);
           });
         }
       } catch (e) {
@@ -1168,161 +2269,130 @@
       }
     }
 
+    async function handleCreateCourse(e) {
+      e.preventDefault();
+      if (!currentPlatform) {
+        alert('Please select or register a platform first');
+        return;
+      }
+      const code = document.getElementById('course-code').value;
+      const title = document.getElementById('course-title').value;
+      const instructor = document.getElementById('course-instructor').value;
+      const desc = document.getElementById('course-desc').value;
+
+      try {
+        const res = await fetch(`/api/v1/knowledge/platforms/${currentPlatform.id}/courses`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ code, title, instructor, description: desc })
+        });
+        if (res.ok) {
+          alert('Course created successfully!');
+          closeModal('modalCreateCourse');
+          await loadCourses();
+        } else {
+          alert('Error creating course');
+        }
+      } catch (err) {
+        alert('Error: ' + err);
+      }
+    }
+
+    // Documents & Parsing
     async function loadDocuments() {
       try {
-        const res = await fetch('/api/v1/knowledge/documents');
+        const res = await fetch('/api/v1/knowledge/documents', { headers: getAuthHeaders() });
         if (res.ok) {
           documents = await res.json();
-          const list = document.getElementById('documentsList');
-          list.innerHTML = '';
-          if (documents.length === 0) {
-            list.innerHTML = '<div class="py-4 text-center text-slate-400 text-xs">No documents uploaded yet.</div>';
-            return;
-          }
+          const tbody = document.getElementById('documentsTableBody');
+          tbody.innerHTML = '';
           documents.forEach(d => {
-            const item = document.createElement('div');
-            item.className = "py-3 flex items-center justify-between text-xs";
-            item.innerHTML = `
-              <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded bg-slate-100 flex items-center justify-center font-bold text-[10px] uppercase text-slate-600">
-                  ${d.file_type}
-                </div>
-                <div>
-                  <div class="font-semibold text-slate-800">${d.title}</div>
-                  <div class="text-[11px] text-slate-500 font-mono">${(d.file_size / 1024).toFixed(1)} KB • ${d.chunk_count} vector chunks</div>
-                </div>
-              </div>
-              <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1">
-                <i data-lucide="check" class="w-3 h-3"></i> Indexed
-              </span>
+            const tr = document.createElement('tr');
+            tr.className = "hover:bg-slate-50";
+            tr.innerHTML = `
+              <td class="py-3 px-4 font-semibold text-slate-800">${d.title}</td>
+              <td class="py-3 px-4 uppercase text-slate-500 text-[10px] font-bold">${d.file_type}</td>
+              <td class="py-3 px-4">${d.chunks_count || 0} chunks</td>
+              <td class="py-3 px-4">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${d.status === 'processed' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                  ${d.status.toUpperCase()}
+                </span>
+              </td>
+              <td class="py-3 px-4 text-slate-400 text-xs">${new Date(d.created_at).toLocaleDateString()}</td>
             `;
-            list.appendChild(item);
+            tbody.appendChild(tr);
           });
-          lucide.createIcons();
         }
       } catch (e) {
         console.error('Error loading documents', e);
       }
     }
 
-    async function handleCreateCourse(e) {
-      e.preventDefault();
-      const payload = {
-        course_code: document.getElementById('course-code').value,
-        title: document.getElementById('course-title').value,
-        instructor_name: document.getElementById('course-instructor').value,
-        description: document.getElementById('course-desc').value
-      };
-
-      try {
-        const res = await fetch('/api/v1/courses', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Public-Key': currentPlatform ? currentPlatform.public_key : ''
-          },
-          body: JSON.stringify(payload)
-        });
-        if (res.ok) {
-          closeModal('modalCreateCourse');
-          await loadCourses();
-        } else {
-          alert('Error creating course: ' + (await res.text()));
-        }
-      } catch (err) {
-        alert('Network error: ' + err);
-      }
-    }
-
     async function handleUploadDoc(e) {
       e.preventDefault();
-      const courseId = document.getElementById('upload-course-select').value;
-      const title = document.getElementById('upload-title').value;
-      const fileInput = document.getElementById('upload-file');
-      if (!fileInput.files || fileInput.files.length === 0) return;
+      const courseId = document.getElementById('doc-course-id').value;
+      const title = document.getElementById('doc-title').value;
+      const fileInput = document.getElementById('doc-file');
+      if (!courseId) {
+        alert('Please select a course first');
+        return;
+      }
+      if (!fileInput.files || fileInput.files.length === 0) {
+        alert('Please choose a file');
+        return;
+      }
 
       const formData = new FormData();
-      formData.append('course_id', courseId);
       formData.append('title', title);
       formData.append('file', fileInput.files[0]);
 
-      document.getElementById('btnUploadSubmit').textContent = 'Processing & Chunking...';
+      const submitBtn = document.getElementById('btnUploadSubmit');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Processing & Embedding...';
+
       try {
-        const res = await fetch('/api/v1/knowledge/documents', {
+        const headers = {};
+        if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+        const res = await fetch(`/api/v1/knowledge/courses/${courseId}/documents`, {
           method: 'POST',
+          headers: headers,
           body: formData
         });
         if (res.ok) {
+          alert('Document parsed, chunked, and embedded into vector storage successfully!');
           closeModal('modalUploadDoc');
           await loadDocuments();
-          alert('Learning material successfully parsed, chunked, and indexed with vector embeddings!');
         } else {
-          alert('Failed to upload document: ' + (await res.text()));
+          alert('Upload failed.');
         }
       } catch (err) {
-        alert('Network error: ' + err);
+        alert('Error: ' + err);
       } finally {
-        document.getElementById('btnUploadSubmit').textContent = 'Upload & Process';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Upload & Process';
       }
     }
 
-    async function testRAGSearch() {
-      const q = document.getElementById('ragTestQuery').value;
-      if (!q) return;
-
-      const resDiv = document.getElementById('ragResults');
-      resDiv.innerHTML = '<div class="text-xs text-slate-500 italic">Performing similarity vector search...</div>';
-
-      try {
-        const res = await fetch('/api/v1/knowledge/search', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, top_k: 3 })
-        });
-        if (res.ok) {
-          const chunks = await res.json();
-          resDiv.innerHTML = '';
-          if (chunks.length === 0) {
-            resDiv.innerHTML = '<div class="text-xs text-slate-500">No matching chunks found.</div>';
-            return;
-          }
-          chunks.forEach(c => {
-            const item = document.createElement('div');
-            item.className = "p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-1";
-            item.innerHTML = `
-              <div class="flex justify-between font-semibold text-slate-800">
-                <span>${c.document_title} ${c.page_number ? `(Page ${c.page_number})` : ''}</span>
-                <span class="text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded text-[10px]">Score: ${c.score}</span>
-              </div>
-              <p class="text-slate-600 leading-relaxed">${c.content}</p>
-            `;
-            resDiv.appendChild(item);
-          });
-        }
-      } catch (e) {
-        resDiv.innerHTML = `<div class="text-xs text-red-600">Search error: ${e}</div>`;
-      }
-    }
-
-    // API: FAQs
+    // FAQs
     async function loadFaqs() {
       try {
-        const res = await fetch('/api/v1/knowledge/faqs');
+        const res = await fetch('/api/v1/knowledge/faqs', { headers: getAuthHeaders() });
         if (res.ok) {
           const faqs = await res.json();
-          const list = document.getElementById('faqsList');
-          list.innerHTML = '';
+          const cont = document.getElementById('faqsContainer');
+          cont.innerHTML = '';
           faqs.forEach(f => {
-            const item = document.createElement('div');
-            item.className = "py-3 text-xs space-y-1";
-            item.innerHTML = `
-              <div class="flex justify-between items-start">
-                <span class="font-bold text-slate-800">${f.question}</span>
-                <span class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded text-[10px] font-mono">${f.category}</span>
+            const card = document.createElement('div');
+            card.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2";
+            card.innerHTML = `
+              <div class="flex justify-between items-center">
+                <span class="bg-slate-100 text-slate-700 font-mono text-[10px] px-2 py-0.5 rounded uppercase font-semibold">${f.category}</span>
+                <span class="text-emerald-600 font-bold text-xs">✓ Verified Offline Fallback</span>
               </div>
-              <p class="text-slate-600">${f.answer}</p>
+              <h4 class="font-bold text-slate-900 text-sm">${f.question}</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">${f.answer}</p>
             `;
-            list.appendChild(item);
+            cont.appendChild(card);
           });
         }
       } catch (e) {
@@ -1332,54 +2402,53 @@
 
     async function handleCreateFaq(e) {
       e.preventDefault();
-      const payload = {
-        category: document.getElementById('faq-category').value,
-        question: document.getElementById('faq-question').value,
-        answer: document.getElementById('faq-answer').value,
-        keywords: document.getElementById('faq-keywords').value.split(',').map(s => s.trim()).filter(Boolean),
-        is_approved: true
-      };
+      const category = document.getElementById('faq-category').value;
+      const question = document.getElementById('faq-question').value;
+      const answer = document.getElementById('faq-answer').value;
+      const keywords = document.getElementById('faq-keywords').value.split(',').map(s => s.trim()).filter(Boolean);
 
       try {
         const res = await fetch('/api/v1/knowledge/faqs', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ category, question, answer, keywords })
         });
         if (res.ok) {
+          alert('FAQ saved!');
           closeModal('modalCreateFaq');
           await loadFaqs();
+        } else {
+          alert('Error saving FAQ');
         }
       } catch (err) {
         alert('Error: ' + err);
       }
     }
 
-    // API: Jobs
+    // Jobs
     async function loadJobs() {
       try {
-        const res = await fetch('/api/v1/jobs');
+        const res = await fetch('/api/v1/jobs', { headers: getAuthHeaders() });
         if (res.ok) {
           const jobs = await res.json();
-          const list = document.getElementById('jobsList');
-          list.innerHTML = '';
+          const cont = document.getElementById('jobsContainer');
+          cont.innerHTML = '';
           jobs.forEach(j => {
-            const item = document.createElement('div');
-            item.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3";
-            item.innerHTML = `
+            const card = document.createElement('div');
+            card.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3";
+            card.innerHTML = `
               <div class="flex justify-between items-start">
                 <div>
                   <h4 class="font-bold text-slate-900">${j.title}</h4>
                   <div class="text-xs text-slate-500">${j.company} • ${j.location || 'Remote'}</div>
                 </div>
-                <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-semibold">${j.employment_type || 'Full-time'}</span>
+                <span class="bg-emerald-100 text-emerald-800 font-mono text-xs px-2 py-0.5 rounded font-bold">${j.employment_type || 'Full-time'}</span>
               </div>
-              <p class="text-xs text-slate-600 line-clamp-2">${j.description}</p>
-              <div class="flex flex-wrap gap-1">
-                ${(j.required_skills || []).map(s => `<span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px]">${s}</span>`).join('')}
+              <div class="flex flex-wrap gap-1.5">
+                ${(j.skills_required || []).map(s => `<span class="bg-slate-100 text-slate-700 text-[10px] px-2 py-0.5 rounded">${s}</span>`).join('')}
               </div>
             `;
-            list.appendChild(item);
+            cont.appendChild(card);
           });
         }
       } catch (e) {
@@ -1387,10 +2456,10 @@
       }
     }
 
-    // API: Learners
+    // Learners
     async function loadLearners() {
       try {
-        const res = await fetch('/api/v1/auth/learners');
+        const res = await fetch('/api/v1/auth/learners', { headers: getAuthHeaders() });
         if (res.ok) {
           const learners = await res.json();
           const tbody = document.getElementById('learnersTableBody');
@@ -1419,10 +2488,10 @@
       }
     }
 
-    // API: Support Tickets
+    // Support Tickets
     async function loadTickets() {
       try {
-        const res = await fetch('/api/v1/support/tickets');
+        const res = await fetch('/api/v1/support/tickets', { headers: getAuthHeaders() });
         if (res.ok) {
           const tickets = await res.json();
           const cont = document.getElementById('ticketsContainer');
@@ -1468,7 +2537,7 @@
       try {
         const res = await fetch(`/api/v1/support/tickets/${id}/status`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify({ status: newStatus })
         });
         if (res.ok) {
@@ -1479,16 +2548,77 @@
       }
     }
 
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text);
-      alert('Copied to clipboard: ' + text);
+    function copyToClipboard(text, btnElement = null) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        textArea.remove();
+      }
+
+      if (btnElement) {
+        const originalContent = btnElement.innerHTML;
+        btnElement.innerHTML = '<span class="text-emerald-700 font-bold text-xs inline-flex items-center gap-1"><i data-lucide="check" class="w-3.5 h-3.5"></i> Copied!</span>';
+        lucide.createIcons();
+        setTimeout(() => {
+          btnElement.innerHTML = originalContent;
+          lucide.createIcons();
+        }, 2000);
+      } else {
+        alert('Copied to clipboard: ' + text);
+      }
     }
 
-    function copySnippet() {
+    function copySnippet(btnElement = null) {
       const code = document.getElementById('embedSnippetCode').textContent;
-      copyToClipboard(code);
+      copyToClipboard(code, btnElement);
+    }
+
+    function copyPlatformSnippet(publicKey, btnElement = null) {
+      const snippet = `<script
+  src="http://localhost:5173/dist/meri.js"
+  data-public-key="${publicKey}"
+  async
+><\/script>`;
+      copyToClipboard(snippet, btnElement);
+    }
+
+    async function rotateKeyForPlatform(id, name) {
+      if (!confirm(`Are you sure you want to rotate integration keys for "${name}"?
+
+The previous secret key will be immediately invalidated and cannot be recovered!`)) {
+        return;
+      }
+      try {
+        const res = await fetch(`/api/v1/platforms/${id}/rotate-keys`, {
+          method: 'POST',
+          headers: getAuthHeaders()
+        });
+        if (res.ok) {
+          const data = await res.json();
+          alert(`Keys Rotated Successfully for "${name}"!
+
+New Public Key: ${data.public_key}
+New Secret Key: ${data.secret_key}
+
+IMPORTANT: Save your secret key now!`);
+          await loadPlatforms(id);
+        } else {
+          const err = await res.json();
+          alert('Error rotating keys: ' + (err.detail || 'Unknown error'));
+        }
+      } catch (err) {
+        alert('Failed to rotate keys: ' + err.message);
+      }
     }
   </script>
 </body>
 </html>
-

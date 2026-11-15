@@ -41,6 +41,9 @@ class UserResponse(BaseModel):
     email: str | None = None
     role: str
     is_active: bool
+    status: str | None = "active"
+    assigned_platform_id: str | None = None
+    assigned_platform_name: str | None = None
 
 
 class LearnerAdminResponse(BaseModel):
@@ -79,3 +82,31 @@ class TelegramPlatformOption(BaseModel):
 class TelegramSelectPlatformRequest(BaseModel):
     telegram_chat_id: str
     platform_id: str
+
+
+class AdminRegisterRequest(BaseModel):
+    full_name: str
+    email: str
+    password: str
+    platform_id: str | None = None
+    requested_platform_name: str | None = None
+    requested_platform_domain: str | None = None
+
+
+class PendingAdminResponse(BaseModel):
+    id: str
+    full_name: str
+    email: str | None = None
+    role: str
+    status: str
+    created_at: str
+    assigned_platform_id: str | None = None
+    assigned_platform_name: str | None = None
+    requested_platform_name: str | None = None
+    requested_platform_domain: str | None = None
+
+
+class AdminApprovalAction(BaseModel):
+    action: str  # "approve" or "reject"
+    platform_id: str | None = None
+    notes: str | None = None

@@ -27,6 +27,18 @@ class User(Base, TimestampMixin):
     )  # admin, teacher, learner, support_agent
     hashed_password: Mapped[str | None] = mapped_column(String(255), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    status: Mapped[str] = mapped_column(
+        String(50), default="active", nullable=False
+    )  # pending, approved, rejected, active
+    assigned_platform_id: Mapped[str | None] = mapped_column(
+        String(36), ForeignKey("platforms.id", ondelete="SET NULL"), nullable=True, index=True
+    )
+    requested_platform_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    requested_platform_domain: Mapped[str | None] = mapped_column(String(255), nullable=True)
+
+    assigned_platform: Mapped[Platform | None] = relationship(
+        "Platform", foreign_keys=[assigned_platform_id]
+    )
 
     # Relationships
     phones: Mapped[list[UserPhone]] = relationship(

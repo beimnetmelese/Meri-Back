@@ -20,12 +20,29 @@ logging.basicConfig(
 logger = logging.getLogger("bridgemate")
 
 
+from sqlalchemy import text
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Initializing BridgeMate Backend database tables...")
     try:
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
+            # Ensure runtime columns exist for multi-tenant platform admin support
+            try:
+                res = await conn.execute(text("PRAGMA table_info(users)"))
+                cols = [r[1] for r in res.fetchall()]
+                if "status" not in cols:
+                    await conn.execute(text("ALTER TABLE users ADD COLUMN status VARCHAR(50) DEFAULT 'active'"))
+                if "assigned_platform_id" not in cols:
+                    await conn.execute(text("ALTER TABLE users ADD COLUMN assigned_platform_id VARCHAR(36)"))
+                if "requested_platform_name" not in cols:
+                    await conn.execute(text("ALTER TABLE users ADD COLUMN requested_platform_name VARCHAR(255)"))
+                if "requested_platform_domain" not in cols:
+                    await conn.execute(text("ALTER TABLE users ADD COLUMN requested_platform_domain VARCHAR(255)"))
+                await conn.execute(text("UPDATE users SET role = 'superadmin', status = 'approved', is_active = 1 WHERE email = 'admin@bridgemate.internal'"))
+            except Exception:
+                pass
         logger.info("Database tables initialized successfully.")
     except Exception as e:
         logger.warning(f"Database initialization notice: {e}")

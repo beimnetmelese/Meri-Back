@@ -1,4 +1,5 @@
 from datetime import timedelta
+import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
@@ -7,18 +8,25 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.database import get_db
-from app.core.dependencies import get_current_user
+from app.core.dependencies import get_current_user, get_current_superadmin
 from app.core.security import (
     create_access_token,
     verify_password,
     verify_secret_key,
+    hash_password,
+    generate_public_key,
+    generate_secret_key,
+    hash_secret_key,
 )
-from app.models.platform import Platform
+from app.models.platform import Platform, PlatformConfiguration, PlatformDomain
 from app.models.user import TelegramAccount, User, UserPlatformMembership
 from app.schemas.auth import (
+    AdminApprovalAction,
+    AdminRegisterRequest,
     HostPlatformLearnerTokenRequest,
     LearnerAdminResponse,
     LoginRequest,
+    PendingAdminResponse,
     TelegramLinkRequest,
     TelegramPlatformOption,
     TelegramSelectPlatformRequest,
@@ -31,6 +39,56 @@ from app.services.telegram_service import telegram_service
 router = APIRouter()
 
 
+@router.post("/register-admin", status_code=status.HTTP_201_CREATED)
+async def register_platform_admin(
+    payload: AdminRegisterRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Public registration endpoint for new Platform Administrators.
+    Creates an account in 'pending' status awaiting SuperAdmin approval.
+    """
+    # Check if email is already taken
+    email_clean = payload.email.strip().lower()
+    stmt = select(User).where(User.email == email_clean)
+    res = await db.execute(stmt)
+    if res.scalar_one_or_none():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="An account with this email address already exists.",
+        )
+
+    assigned_platform_id = None
+    if payload.platform_id:
+        plat_stmt = select(Platform).where(Platform.id == payload.platform_id)
+        plat_res = await db.execute(plat_stmt)
+        platform = plat_res.scalar_one_or_none()
+        if platform:
+            assigned_platform_id = platform.id
+
+    new_admin = User(
+        email=email_clean,
+        full_name=payload.full_name.strip(),
+        role="platform_admin",
+        hashed_password=hash_password(payload.password),
+        is_active=False,  # Inactive until approved
+        status="pending",
+        assigned_platform_id=assigned_platform_id,
+        requested_platform_name=payload.requested_platform_name.strip() if payload.requested_platform_name else None,
+        requested_platform_domain=payload.requested_platform_domain.strip().lower() if payload.requested_platform_domain else None,
+    )
+    db.add(new_admin)
+    await db.commit()
+    await db.refresh(new_admin)
+
+    return {
+        "status": "pending",
+        "message": "Your application has been submitted! The SuperAdmin will review and approve your application before you can log in.",
+        "user_id": new_admin.id,
+        "email": new_admin.email,
+    }
+
+
 @router.post("/token", response_model=Token)
 async def obtain_token(
     payload: HostPlatformLearnerTokenRequest | LoginRequest,
@@ -39,7 +97,7 @@ async def obtain_token(
     """
     Unified Token Endpoint:
     1. Server-to-server: Host platform requests a secure short-lived token for a logged-in learner.
-    2. Direct login: Admin or teacher logging in directly with credentials.
+    2. Direct login: SuperAdmin or Platform Admin logging in with credentials.
     """
     # Case 1: Host platform server-to-server learner token
     if isinstance(payload, HostPlatformLearnerTokenRequest) or hasattr(payload, "secret_key"):
@@ -69,12 +127,12 @@ async def obtain_token(
         user = learner_res.scalar_one_or_none()
 
         if not user:
-            # Create user and membership
             user = User(
                 email=req.learner_email,
                 full_name=req.learner_name,
                 role=req.role or "learner",
                 is_active=True,
+                status="approved",
             )
             db.add(user)
             await db.flush()
@@ -84,11 +142,11 @@ async def obtain_token(
                 platform_id=platform.id,
                 external_learner_id=req.external_learner_id,
                 role=req.role or "learner",
+                status="active",
             )
             db.add(membership)
             await db.commit()
 
-        # Mint short-lived learner integration token
         expires_delta = timedelta(minutes=settings.INTEGRATION_TOKEN_EXPIRE_MINUTES)
         token_str = create_access_token(
             subject=user.id,
@@ -105,10 +163,11 @@ async def obtain_token(
             expires_in=settings.INTEGRATION_TOKEN_EXPIRE_MINUTES * 60,
         )
 
-    # Case 2: Direct user password login
+    # Case 2: Direct user password login (SuperAdmin or Platform Admin)
     login_req: LoginRequest = payload  # type: ignore
     user_stmt = select(User).where(
-        (User.email == login_req.username_or_email) | (User.id == login_req.username_or_email)
+        (User.email == login_req.username_or_email.strip().lower())
+        | (User.id == login_req.username_or_email.strip())
     )
     user_res = await db.execute(user_stmt)
     user = user_res.scalar_one_or_none()
@@ -120,14 +179,49 @@ async def obtain_token(
     ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="Incorrect email or password",
         )
+
+    # Check approval status and account state
+    if user.status == "pending":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Your application is pending review by the SuperAdmin. Please wait for approval before logging in.",
+        )
+    if user.status == "rejected":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Your platform administrator application was not approved by the SuperAdmin.",
+        )
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="This account has been deactivated. Please contact the administrator.",
+        )
+
+    # Determine assigned platform details
+    assigned_plat_name = None
+    if user.assigned_platform_id:
+        p_stmt = select(Platform).where(Platform.id == user.assigned_platform_id)
+        p_res = await db.execute(p_stmt)
+        p = p_res.scalar_one_or_none()
+        if p:
+            assigned_plat_name = p.name
+
+    role_normalized = "superadmin" if user.role in ("superadmin", "admin") else user.role
 
     expires_delta = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     token_str = create_access_token(
         subject=user.id,
         expires_delta=expires_delta,
-        extra_claims={"role": user.role},
+        extra_claims={
+            "role": role_normalized,
+            "status": user.status,
+            "platform_id": user.assigned_platform_id,
+            "platform_name": assigned_plat_name,
+            "full_name": user.full_name,
+            "email": user.email,
+        },
     )
     return Token(
         access_token=token_str,
@@ -143,7 +237,7 @@ async def refresh_token(
     token_str = create_access_token(
         subject=current_user.id,
         expires_delta=expires_delta,
-        extra_claims={"role": current_user.role},
+        extra_claims={"role": current_user.role, "status": current_user.status},
     )
     return Token(
         access_token=token_str,
@@ -152,8 +246,214 @@ async def refresh_token(
 
 
 @router.get("/me", response_model=UserResponse)
-async def get_me(current_user: User = Depends(get_current_user)):
-    return current_user
+async def get_me(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    assigned_plat_name = None
+    if current_user.assigned_platform_id:
+        stmt = select(Platform).where(Platform.id == current_user.assigned_platform_id)
+        res = await db.execute(stmt)
+        plat = res.scalar_one_or_none()
+        if plat:
+            assigned_plat_name = plat.name
+
+    role_normalized = "superadmin" if current_user.role in ("superadmin", "admin") else current_user.role
+
+    return UserResponse(
+        id=current_user.id,
+        full_name=current_user.full_name,
+        email=current_user.email,
+        role=role_normalized,
+        is_active=current_user.is_active,
+        status=current_user.status,
+        assigned_platform_id=current_user.assigned_platform_id,
+        assigned_platform_name=assigned_plat_name,
+    )
+
+
+@router.get("/pending-admins", response_model=list[PendingAdminResponse])
+async def list_pending_admins(
+    current_user: User = Depends(get_current_superadmin),
+    db: AsyncSession = Depends(get_db),
+):
+    """SuperAdmin endpoint to list all platform admin applications awaiting review."""
+    stmt = (
+        select(User)
+        .where(User.role == "platform_admin", User.status == "pending")
+        .order_by(User.created_at.desc())
+    )
+    res = await db.execute(stmt)
+    pending_users = res.scalars().all()
+
+    results = []
+    for u in pending_users:
+        plat_name = None
+        if u.assigned_platform_id:
+            p_res = await db.execute(select(Platform).where(Platform.id == u.assigned_platform_id))
+            p = p_res.scalar_one_or_none()
+            if p:
+                plat_name = p.name
+
+        results.append(
+            PendingAdminResponse(
+                id=u.id,
+                full_name=u.full_name,
+                email=u.email,
+                role=u.role,
+                status=u.status,
+                created_at=u.created_at.isoformat() if u.created_at else "",
+                assigned_platform_id=u.assigned_platform_id,
+                assigned_platform_name=plat_name,
+                requested_platform_name=u.requested_platform_name,
+                requested_platform_domain=u.requested_platform_domain,
+            )
+        )
+    return results
+
+
+@router.get("/approved-admins", response_model=list[PendingAdminResponse])
+async def list_approved_admins(
+    current_user: User = Depends(get_current_superadmin),
+    db: AsyncSession = Depends(get_db),
+):
+    """SuperAdmin endpoint to list all approved platform admins."""
+    stmt = (
+        select(User)
+        .where(User.role == "platform_admin", User.status == "approved")
+        .order_by(User.created_at.desc())
+    )
+    res = await db.execute(stmt)
+    admins = res.scalars().all()
+
+    results = []
+    for u in admins:
+        plat_name = None
+        if u.assigned_platform_id:
+            p_res = await db.execute(select(Platform).where(Platform.id == u.assigned_platform_id))
+            p = p_res.scalar_one_or_none()
+            if p:
+                plat_name = p.name
+
+        results.append(
+            PendingAdminResponse(
+                id=u.id,
+                full_name=u.full_name,
+                email=u.email,
+                role=u.role,
+                status=u.status,
+                created_at=u.created_at.isoformat() if u.created_at else "",
+                assigned_platform_id=u.assigned_platform_id,
+                assigned_platform_name=plat_name,
+                requested_platform_name=u.requested_platform_name,
+                requested_platform_domain=u.requested_platform_domain,
+            )
+        )
+    return results
+
+
+@router.post("/approve-admin/{admin_id}")
+async def approve_platform_admin(
+    admin_id: str,
+    action: AdminApprovalAction | None = None,
+    current_user: User = Depends(get_current_superadmin),
+    db: AsyncSession = Depends(get_db),
+):
+    """SuperAdmin endpoint to approve a pending platform admin and link them to their platform."""
+    stmt = select(User).where(User.id == admin_id)
+    res = await db.execute(stmt)
+    user = res.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    target_platform_id = action.platform_id if (action and action.platform_id) else user.assigned_platform_id
+
+    # If the user requested a new platform that hasn't been created yet:
+    if not target_platform_id and user.requested_platform_name:
+        domain = user.requested_platform_domain or f"{user.requested_platform_name.lower().replace(' ', '-')}.example.com"
+        # Check domain existence
+        existing_p = await db.execute(select(Platform).where(Platform.domain == domain))
+        p = existing_p.scalar_one_or_none()
+        if not p:
+            p = Platform(
+                name=user.requested_platform_name,
+                domain=domain,
+                public_key=generate_public_key(),
+                secret_key_hash=hash_secret_key(generate_secret_key()),
+                enabled=True,
+            )
+            db.add(p)
+            await db.flush()
+            # Add default configuration
+            cfg = PlatformConfiguration(
+                platform_id=p.id,
+                platform_name=p.name,
+                theme={"primary": "#16A34A", "secondary": "#14532D", "background": "#FFFFFF", "text": "#111827", "chat_button": "#16A34A"},
+                branding={"logo_url": "https://example.com/logo.png"},
+                welcome_message=f"Welcome to {p.name}! How can I assist you today?",
+                features={"voice": True, "human_support": True, "simple_mode": True, "job_assistance": True, "course_assistant": True},
+            )
+            db.add(cfg)
+            db.add(PlatformDomain(platform_id=p.id, domain=domain, is_verified=True))
+            await db.flush()
+        target_platform_id = p.id
+
+    user.status = "approved"
+    user.is_active = True
+    user.assigned_platform_id = target_platform_id
+
+    # Create membership if platform exists
+    if target_platform_id:
+        mem_stmt = select(UserPlatformMembership).where(
+            UserPlatformMembership.user_id == user.id,
+            UserPlatformMembership.platform_id == target_platform_id,
+        )
+        mem_res = await db.execute(mem_stmt)
+        if not mem_res.scalar_one_or_none():
+            db.add(
+                UserPlatformMembership(
+                    user_id=user.id,
+                    platform_id=target_platform_id,
+                    external_learner_id=f"admin_{user.id[:8]}",
+                    role="admin",
+                    status="active",
+                )
+            )
+
+    await db.commit()
+    await db.refresh(user)
+
+    return {
+        "status": "success",
+        "message": f"Platform Administrator {user.full_name} has been approved successfully.",
+        "user_id": user.id,
+        "platform_id": user.assigned_platform_id,
+    }
+
+
+@router.post("/reject-admin/{admin_id}")
+async def reject_platform_admin(
+    admin_id: str,
+    action: AdminApprovalAction | None = None,
+    current_user: User = Depends(get_current_superadmin),
+    db: AsyncSession = Depends(get_db),
+):
+    """SuperAdmin endpoint to reject an application."""
+    stmt = select(User).where(User.id == admin_id)
+    res = await db.execute(stmt)
+    user = res.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    user.status = "rejected"
+    user.is_active = False
+    await db.commit()
+
+    return {
+        "status": "rejected",
+        "message": f"Application for {user.full_name} has been rejected.",
+        "user_id": user.id,
+    }
 
 
 @router.post("/telegram/link")
@@ -258,7 +558,6 @@ async def select_telegram_platform(
             status_code=status.HTTP_404_NOT_FOUND, detail="Telegram account not verified"
         )
 
-    # Verify membership exists
     mem_stmt = select(UserPlatformMembership).where(
         UserPlatformMembership.user_id == tg.user_id,
         UserPlatformMembership.platform_id == payload.platform_id,
@@ -310,4 +609,3 @@ async def list_registered_learners(
             )
         )
     return result
-
