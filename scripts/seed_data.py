@@ -157,6 +157,9 @@ async def seed():
             hashed_password=hash_password("StudentPass123!"),
             is_active=True,
         )
+        session.add(learner)
+        await session.flush()
+
         session.add(
             UserPlatformMembership(
                 user_id=savanna_admin.id,
@@ -165,8 +168,6 @@ async def seed():
                 role="admin",
             )
         )
-        session.add(learner)
-        await session.flush()
 
         # Add verified phone for Telegram linking
         learner_phone = UserPhone(
