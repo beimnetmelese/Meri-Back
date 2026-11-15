@@ -29,6 +29,32 @@ async def seed():
         )
         existing_platform = res.scalar_one_or_none()
         if existing_platform:
+            # Ensure Savanna Platform Admin exists
+            adm_res = await session.execute(
+                select(User).where(User.email == "admin@savanna.alx")
+            )
+            if not adm_res.scalar_one_or_none():
+                savanna_admin = User(
+                    email="admin@savanna.alx",
+                    full_name="Savanna Platform Admin",
+                    role="platform_admin",
+                    status="approved",
+                    assigned_platform_id=existing_platform.id,
+                    hashed_password=hash_password("SavannaAdmin123!"),
+                    is_active=True,
+                )
+                session.add(savanna_admin)
+                await session.flush()
+                session.add(
+                    UserPlatformMembership(
+                        user_id=savanna_admin.id,
+                        platform_id=existing_platform.id,
+                        external_learner_id="SAVANNA_ADM_001",
+                        role="admin",
+                    )
+                )
+                await session.commit()
+                print("✅ Seeded Savanna Platform Admin: admin@savanna.alx")
             print("✅ Database already contains seed data.")
             return
 
@@ -113,12 +139,31 @@ async def seed():
         )
         session.add(admin)
 
+        savanna_admin = User(
+            email="admin@savanna.alx",
+            full_name="Savanna Platform Admin",
+            role="platform_admin",
+            status="approved",
+            assigned_platform_id=savanna_platform.id,
+            hashed_password=hash_password("SavannaAdmin123!"),
+            is_active=True,
+        )
+        session.add(savanna_admin)
+
         learner = User(
             email="learner@savanna.example.com",
             full_name="Dawit Bekele",
             role="learner",
             hashed_password=hash_password("StudentPass123!"),
             is_active=True,
+        )
+        session.add(
+            UserPlatformMembership(
+                user_id=savanna_admin.id,
+                platform_id=savanna_platform.id,
+                external_learner_id="SAVANNA_ADM_001",
+                role="admin",
+            )
         )
         session.add(learner)
         await session.flush()
