@@ -11,6 +11,10 @@ class SupportTicketCreate(BaseModel):
     initial_message: str | None = None
     consent_share_history: bool = Field(default=True)
     screen_sharing_active: bool = Field(default=False)
+    platform_id: str | None = None
+    public_key: str | None = None
+    learner_name: str | None = None
+    page_context: str | None = None
 
 
 class SupportMessageCreate(BaseModel):
@@ -42,8 +46,9 @@ class SupportTicketResponse(BaseModel):
     screen_sharing_active: bool
     created_at: datetime
     messages: list[SupportMessageResponse] = Field(default_factory=list)
+    learner_name: str | None = None
+    platform_name: str | None = None
 
 
 class SupportTicketStatusUpdate(BaseModel):
     status: str = Field(..., examples=["in_progress", "resolved", "closed"])
-

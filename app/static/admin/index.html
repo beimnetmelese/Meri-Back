@@ -233,9 +233,10 @@
           <i data-lucide="users" class="w-4 h-4"></i>
           <span>Learners & Telegram</span>
         </button>
-        <button onclick="switchTab('support')" id="tab-btn-support" class="py-3 px-1 hover:text-slate-900 flex items-center gap-2">
+        <button onclick="switchTab('support')" id="tab-btn-support" class="py-3 px-1 hover:text-slate-900 flex items-center gap-2 relative">
           <i data-lucide="life-buoy" class="w-4 h-4"></i>
           <span>Support Center</span>
+          <span id="badgeSupportWaiting" class="hidden px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500 text-white animate-pulse">0</span>
         </button>
         <button onclick="switchTab('analytics')" id="tab-btn-analytics" class="py-3 px-1 hover:text-slate-900 flex items-center gap-2">
           <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
@@ -757,16 +758,66 @@
 
     <!-- TAB 6: SUPPORT CENTER -->
     <section id="tab-support" class="hidden space-y-6">
-      <div class="flex items-center justify-between">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 class="text-xl font-bold text-slate-900">Human Assistance Support Center</h2>
-          <p class="text-sm text-slate-500">Manage escalated requests from learners when AI provides uncertain answers or complex support is required.</p>
+          <div class="flex items-center gap-2">
+            <h2 class="text-xl font-bold text-slate-900">Live Human Assistance & Tutoring Hub</h2>
+            <span id="supportScopeBadge" class="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">Scoped Platform Live</span>
+          </div>
+          <p class="text-sm text-slate-500">Respond in real time when students on your LMS request live tutor help or human escalation.</p>
         </div>
-        <button onclick="loadTickets()" class="flex items-center gap-1.5 text-xs bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-slate-700 hover:bg-slate-50">
-          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Tickets
-        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="loadTickets()" class="flex items-center gap-1.5 text-xs bg-white border border-slate-200 px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 shadow-xs transition">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh
+          </button>
+        </div>
       </div>
 
+      <!-- Support KPI Counters -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white p-4 rounded-xl border border-amber-200 shadow-xs flex items-center justify-between">
+          <div>
+            <div class="text-xs font-semibold text-amber-700 uppercase tracking-wider">Waiting for Response</div>
+            <div id="countWaitingTickets" class="text-2xl font-bold text-amber-900 mt-1">0</div>
+            <div class="text-[11px] text-amber-600 mt-0.5">Students currently waiting</div>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
+            <i data-lucide="clock" class="w-5 h-5 animate-pulse"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-sky-200 shadow-xs flex items-center justify-between">
+          <div>
+            <div class="text-xs font-semibold text-sky-700 uppercase tracking-wider">In Progress Live</div>
+            <div id="countInProgressTickets" class="text-2xl font-bold text-sky-900 mt-1">0</div>
+            <div class="text-[11px] text-sky-600 mt-0.5">Active chat sessions</div>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center text-sky-600">
+            <i data-lucide="message-square" class="w-5 h-5"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
+          <div>
+            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Resolved Sessions</div>
+            <div id="countResolvedTickets" class="text-2xl font-bold text-slate-900 mt-1">0</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">Completed tutor sessions</div>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Controls -->
+      <div class="flex items-center gap-2 border-b border-slate-200 pb-3 text-xs font-semibold">
+        <button onclick="filterTickets('all')" id="btnFilterAll" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white shadow-xs transition">All Requests</button>
+        <button onclick="filterTickets('open')" id="btnFilterOpen" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Waiting (<span id="filterOpenCount">0</span>)</button>
+        <button onclick="filterTickets('in_progress')" id="btnFilterInProgress" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">In Progress (<span id="filterInProgressCount">0</span>)</button>
+        <button onclick="filterTickets('resolved')" id="btnFilterResolved" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Resolved (<span id="filterResolvedCount">0</span>)</button>
+      </div>
+
+      <!-- Tickets List -->
       <div id="ticketsContainer" class="space-y-4">
         <div class="py-8 text-center text-slate-400 text-xs">Loading support tickets...</div>
       </div>
@@ -1202,6 +1253,80 @@
           <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium">Save FAQ</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- MODAL: LIVE HUMAN SUPPORT CHAT -->
+  <div id="modalLiveChat" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full flex flex-col max-h-[90vh] shadow-2xl border border-slate-200 overflow-hidden animate-slide-up">
+      <!-- Modal Header -->
+      <div class="px-5 py-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold shrink-0">
+            <i data-lucide="headset" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 id="liveChatLearnerName" class="font-bold text-sm sm:text-base text-white">Learner Live Assistance</h3>
+              <span id="liveChatPlatformBadge" class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">Savanna LMS</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
+              <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span id="liveChatStatusText">Live Session Active</span>
+              <span>•</span>
+              <span id="liveChatTicketId" class="font-mono text-[11px] text-slate-300"></span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="resolveCurrentLiveTicket()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5 transition">
+            <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+            <span>Resolve Session</span>
+          </button>
+          <button onclick="closeLiveChatModal()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Subject & Page Context Info Banner -->
+      <div class="bg-slate-50 px-5 py-2.5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
+        <div class="flex items-center gap-2">
+          <span class="font-semibold text-slate-800">Topic:</span>
+          <span id="liveChatSubject" class="font-medium text-slate-900 truncate max-w-xs sm:max-w-md"></span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="liveChatScreenShareBadge" class="hidden items-center gap-1 text-[11px] font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">
+            <i data-lucide="monitor" class="w-3 h-3"></i> Screen Sharing Active
+          </span>
+          <span id="liveChatCreatedAt" class="text-slate-400 text-[11px]"></span>
+        </div>
+      </div>
+
+      <!-- Chat Transcript Area -->
+      <div id="liveChatMessagesContainer" class="flex-1 p-5 overflow-y-auto space-y-3 bg-slate-100/50 min-h-[300px] max-h-[420px]">
+        <!-- Messages rendered dynamically -->
+      </div>
+
+      <!-- Quick Canned Responses -->
+      <div class="px-5 py-2 bg-slate-50 border-t border-slate-200 flex items-center gap-2 overflow-x-auto text-[11px]">
+        <span class="text-slate-400 font-medium shrink-0">Quick replies:</span>
+        <button onclick="insertCannedReply('Hello! I am your platform tutor. How can I assist you with this lesson today?')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 border border-slate-200 rounded-full text-slate-600 whitespace-nowrap transition">👋 Hello, how can I help?</button>
+        <button onclick="insertCannedReply('Could you share which part or error code you are stuck on?')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 border border-slate-200 rounded-full text-slate-600 whitespace-nowrap transition">🔍 What part are you stuck on?</button>
+        <button onclick="insertCannedReply('Let us review your code step-by-step. Make sure your variables and syntax match the prompt.')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 border border-slate-200 rounded-full text-slate-600 whitespace-nowrap transition">💡 Check variables & syntax</button>
+        <button onclick="insertCannedReply('Does that answer your question? Let me know if you need more help!')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 border border-slate-200 rounded-full text-slate-600 whitespace-nowrap transition">✅ Does this solve it?</button>
+      </div>
+
+      <!-- Message Input Bar -->
+      <div class="p-3 sm:p-4 bg-white border-t border-slate-200 flex items-center gap-2">
+        <textarea id="liveChatMessageInput" rows="1" placeholder="Type a response to the student... (Press Enter to send)"
+          class="flex-1 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white resize-none"
+          onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendLiveChatMessage(); }"></textarea>
+        <button onclick="sendLiveChatMessage()" class="h-10 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold text-xs sm:text-sm flex items-center gap-1.5 shadow-sm transition shrink-0">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          <span>Send</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1669,6 +1794,18 @@
           btn.classList.add('hover:text-slate-900');
         }
       });
+
+      if (tabId === 'support') {
+        loadTickets();
+        if (supportAutoRefreshTimer) clearInterval(supportAutoRefreshTimer);
+        supportAutoRefreshTimer = setInterval(loadTickets, 3500);
+      } else {
+        if (supportAutoRefreshTimer) {
+          clearInterval(supportAutoRefreshTimer);
+          supportAutoRefreshTimer = null;
+        }
+      }
+
       lucide.createIcons();
     }
 
@@ -2512,49 +2649,358 @@ IMPORTANT: Save your secret key now. It will not be shown again!`);
       }
     }
 
-    // Support Tickets
+    // Live Human Assistance & Support Hub
+    let allSupportTickets = [];
+    let activeTicketFilter = 'all';
+    let activeLiveTicketId = null;
+    let liveChatPollTimer = null;
+    let supportAutoRefreshTimer = null;
+
     async function loadTickets() {
       try {
         const res = await fetch('/api/v1/support/tickets', { headers: getAuthHeaders() });
         if (res.ok) {
-          const tickets = await res.json();
-          const cont = document.getElementById('ticketsContainer');
-          cont.innerHTML = '';
-          if (tickets.length === 0) {
-            cont.innerHTML = '<div class="py-6 text-center text-slate-400 text-xs">No active support requests.</div>';
-            return;
-          }
-          tickets.forEach(t => {
-            const item = document.createElement('div');
-            item.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3";
-            item.innerHTML = `
-              <div class="flex justify-between items-start">
-                <div>
-                  <h4 class="font-bold text-slate-900">${t.subject}</h4>
-                  <div class="text-xs text-slate-500">Ticket ID: ${t.id} • ${new Date(t.created_at).toLocaleString()}</div>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold ${t.status === 'open' ? 'bg-amber-100 text-amber-800' : t.status === 'in_progress' ? 'bg-sky-100 text-sky-800' : 'bg-emerald-100 text-emerald-800'}">
-                    ${t.status.toUpperCase()}
-                  </span>
-                  <select onchange="updateTicketStatus('${t.id}', this.value)" class="text-xs bg-slate-100 border border-slate-200 rounded px-2 py-1">
-                    <option value="open" ${t.status === 'open' ? 'selected' : ''}>Open</option>
-                    <option value="in_progress" ${t.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
-                    <option value="resolved" ${t.status === 'resolved' ? 'selected' : ''}>Resolved</option>
-                    <option value="closed" ${t.status === 'closed' ? 'selected' : ''}>Closed</option>
-                  </select>
-                </div>
-              </div>
-              <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 text-xs text-slate-700">
-                ${t.messages && t.messages.length > 0 ? t.messages[0].content : 'No initial message attached.'}
-              </div>
-            `;
-            cont.appendChild(item);
-          });
+          allSupportTickets = await res.json();
+          renderSupportDashboard();
         }
       } catch (e) {
         console.error('Error loading tickets', e);
       }
+    }
+
+    function renderSupportDashboard() {
+      const tickets = allSupportTickets;
+      const waitingCount = tickets.filter(t => t.status === 'open').length;
+      const inProgressCount = tickets.filter(t => t.status === 'in_progress').length;
+      const resolvedCount = tickets.filter(t => t.status === 'resolved' || t.status === 'closed').length;
+
+      // Update counters
+      const countWaitingEl = document.getElementById('countWaitingTickets');
+      const countInProgressEl = document.getElementById('countInProgressTickets');
+      const countResolvedEl = document.getElementById('countResolvedTickets');
+      if (countWaitingEl) countWaitingEl.textContent = waitingCount;
+      if (countInProgressEl) countInProgressEl.textContent = inProgressCount;
+      if (countResolvedEl) countResolvedEl.textContent = resolvedCount;
+
+      const fOpenCount = document.getElementById('filterOpenCount');
+      const fInProgCount = document.getElementById('filterInProgressCount');
+      const fResCount = document.getElementById('filterResolvedCount');
+      if (fOpenCount) fOpenCount.textContent = waitingCount;
+      if (fInProgCount) fInProgCount.textContent = inProgressCount;
+      if (fResCount) fResCount.textContent = resolvedCount;
+
+      // Update scope badge
+      const scopeBadge = document.getElementById('supportScopeBadge');
+      if (scopeBadge && currentUser) {
+        if (currentUser.assigned_platform_name) {
+          scopeBadge.textContent = `${currentUser.assigned_platform_name} Live Scope`;
+        } else if (currentUser.role === 'superadmin') {
+          scopeBadge.textContent = 'All Platforms (SuperAdmin)';
+        }
+      }
+
+      // Sidebar tab badge
+      const tabBadge = document.getElementById('badgeSupportWaiting');
+      if (tabBadge) {
+        if (waitingCount > 0) {
+          tabBadge.textContent = waitingCount;
+          tabBadge.classList.remove('hidden');
+        } else {
+          tabBadge.classList.add('hidden');
+        }
+      }
+
+      // Filter tickets
+      let filtered = tickets;
+      if (activeTicketFilter === 'open') {
+        filtered = tickets.filter(t => t.status === 'open');
+      } else if (activeTicketFilter === 'in_progress') {
+        filtered = tickets.filter(t => t.status === 'in_progress');
+      } else if (activeTicketFilter === 'resolved') {
+        filtered = tickets.filter(t => t.status === 'resolved' || t.status === 'closed');
+      }
+
+      const cont = document.getElementById('ticketsContainer');
+      if (!cont) return;
+      cont.innerHTML = '';
+
+      if (filtered.length === 0) {
+        cont.innerHTML = `
+          <div class="py-12 bg-white rounded-2xl border border-dashed border-slate-200 text-center space-y-2">
+            <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center">
+              <i data-lucide="check" class="w-5 h-5"></i>
+            </div>
+            <p class="text-sm font-semibold text-slate-700">No support requests in this view</p>
+            <p class="text-xs text-slate-400">Incoming live help requests from learners will appear here in real-time.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      filtered.forEach(t => {
+        const item = document.createElement('div');
+        const isOpen = t.status === 'open';
+        const isInProgress = t.status === 'in_progress';
+
+        item.className = `bg-white p-5 rounded-2xl border transition shadow-xs ${
+          isOpen ? 'border-amber-300 ring-1 ring-amber-200/50 bg-amber-50/20' :
+          isInProgress ? 'border-emerald-300 ring-1 ring-emerald-200/50 bg-emerald-50/20' :
+          'border-slate-200'
+        }`;
+
+        const learnerDisplay = t.learner_name || 'Learner';
+        const platformDisplay = t.platform_name || 'Platform LMS';
+        const dateStr = new Date(t.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' });
+        const initialMsg = t.messages && t.messages.length > 0 ? t.messages[0].content : 'No initial message attached.';
+
+        item.innerHTML = `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-full ${isOpen ? 'bg-amber-100 text-amber-700' : isInProgress ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'} flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                ${learnerDisplay.slice(0, 2).toUpperCase()}
+              </div>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h4 class="font-bold text-slate-900 text-sm sm:text-base">${t.subject}</h4>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                    isOpen ? 'bg-amber-100 text-amber-800 border border-amber-300 animate-pulse' :
+                    isInProgress ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                    'bg-slate-100 text-slate-600'
+                  }">
+                    ${isOpen ? '● WAITING FOR TUTOR' : isInProgress ? '● LIVE SESSION' : 'RESOLVED'}
+                  </span>
+                  <span class="bg-slate-100 text-slate-600 text-[10px] font-semibold px-2 py-0.5 rounded">
+                    ${platformDisplay}
+                  </span>
+                </div>
+                <div class="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+                  <span class="font-medium text-slate-700">Student: ${learnerDisplay}</span>
+                  <span>•</span>
+                  <span>Requested: ${dateStr}</span>
+                  <span>•</span>
+                  <span class="font-mono text-[11px] text-slate-400">#${t.id.slice(0, 8)}</span>
+                  ${t.screen_sharing_active ? '<span class="text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded text-[10px] font-semibold border border-amber-200">🖥️ Screen Share Enabled</span>' : ''}
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
+              ${isOpen ? `
+                <button onclick="openLiveChat('${t.id}')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs flex items-center gap-1.5 transition">
+                  <i data-lucide="message-circle" class="w-4 h-4"></i>
+                  <span>Accept & Start Live Chat</span>
+                </button>
+              ` : isInProgress ? `
+                <button onclick="openLiveChat('${t.id}')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-700 text-white shadow-xs flex items-center gap-1.5 transition">
+                  <i data-lucide="message-square" class="w-4 h-4"></i>
+                  <span>Continue Live Chat</span>
+                </button>
+              ` : `
+                <button onclick="openLiveChat('${t.id}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition">
+                  <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                  <span>View History</span>
+                </button>
+              `}
+              <select onchange="updateTicketStatus('${t.id}', this.value)" class="text-xs bg-white border border-slate-200 rounded-xl px-2.5 py-2 font-medium text-slate-700 hover:bg-slate-50">
+                <option value="open" ${t.status === 'open' ? 'selected' : ''}>Open</option>
+                <option value="in_progress" ${t.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                <option value="resolved" ${t.status === 'resolved' ? 'selected' : ''}>Resolved</option>
+                <option value="closed" ${t.status === 'closed' ? 'selected' : ''}>Closed</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Initial student inquiry -->
+          <div class="mt-3.5 p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs text-slate-700">
+            <span class="font-semibold text-slate-900">Student inquiry:</span> ${initialMsg}
+          </div>
+        `;
+        cont.appendChild(item);
+      });
+      lucide.createIcons();
+    }
+
+    function filterTickets(status) {
+      activeTicketFilter = status;
+      ['All', 'Open', 'InProgress', 'Resolved'].forEach(name => {
+        const btn = document.getElementById(`btnFilter${name}`);
+        if (!btn) return;
+        if (
+          (status === 'all' && name === 'All') ||
+          (status === 'open' && name === 'Open') ||
+          (status === 'in_progress' && name === 'InProgress') ||
+          (status === 'resolved' && name === 'Resolved')
+        ) {
+          btn.className = 'px-3 py-1.5 rounded-lg bg-slate-900 text-white shadow-xs transition';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
+        }
+      });
+      renderSupportDashboard();
+    }
+
+    async function openLiveChat(ticketId) {
+      activeLiveTicketId = ticketId;
+      openModal('modalLiveChat');
+
+      // Auto-claim ticket if currently open
+      const ticket = allSupportTickets.find(t => t.id === ticketId);
+      if (ticket && ticket.status === 'open') {
+        try {
+          await fetch(`/api/v1/support/tickets/${ticketId}/status`, {
+            method: 'PATCH',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ status: 'in_progress' })
+          });
+        } catch (e) {
+          console.warn('Status update error', e);
+        }
+      }
+
+      await pollActiveLiveChat();
+
+      if (liveChatPollTimer) clearInterval(liveChatPollTimer);
+      liveChatPollTimer = setInterval(pollActiveLiveChat, 2000);
+    }
+
+    async function pollActiveLiveChat() {
+      if (!activeLiveTicketId) return;
+      try {
+        const res = await fetch(`/api/v1/support/tickets/${activeLiveTicketId}`, { headers: getAuthHeaders() });
+        if (!res.ok) return;
+        const ticket = await res.json();
+
+        // Update modal header info
+        const nameEl = document.getElementById('liveChatLearnerName');
+        const platEl = document.getElementById('liveChatPlatformBadge');
+        const statusEl = document.getElementById('liveChatStatusText');
+        const ticketIdEl = document.getElementById('liveChatTicketId');
+        const subjectEl = document.getElementById('liveChatSubject');
+        const screenEl = document.getElementById('liveChatScreenShareBadge');
+        const createdEl = document.getElementById('liveChatCreatedAt');
+
+        if (nameEl) nameEl.textContent = `${ticket.learner_name || 'Learner'} Live Assistance`;
+        if (platEl) platEl.textContent = ticket.platform_name || 'Platform';
+        if (ticketIdEl) ticketIdEl.textContent = `#${ticket.id.slice(0, 8)}`;
+        if (subjectEl) subjectEl.textContent = ticket.subject;
+        if (createdEl) createdEl.textContent = new Date(ticket.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        if (statusEl) {
+          statusEl.textContent = ticket.status === 'in_progress' ? 'Live Session Active' :
+                                 ticket.status === 'open' ? 'Waiting for Response' : 'Session Resolved';
+        }
+        if (screenEl) {
+          if (ticket.screen_sharing_active) {
+            screenEl.classList.remove('hidden');
+            screenEl.classList.add('flex');
+          } else {
+            screenEl.classList.add('hidden');
+            screenEl.classList.remove('flex');
+          }
+        }
+
+        // Render messages
+        const msgContainer = document.getElementById('liveChatMessagesContainer');
+        if (msgContainer) {
+          const messages = ticket.messages || [];
+          if (messages.length === 0) {
+            msgContainer.innerHTML = '<div class="py-8 text-center text-slate-400 text-xs">No messages yet. Send a greeting to start the conversation!</div>';
+          } else {
+            const isScrolledToBottom = msgContainer.scrollHeight - msgContainer.clientHeight <= msgContainer.scrollTop + 50;
+            msgContainer.innerHTML = messages.map(m => {
+              const isAgent = m.sender_role === 'support_agent';
+              const timeStr = new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+              return `
+                <div class="flex flex-col ${isAgent ? 'items-end' : 'items-start'}">
+                  <div class="flex items-center gap-1.5 text-[10px] text-slate-400 mb-1">
+                    <span class="font-semibold ${isAgent ? 'text-emerald-700' : 'text-slate-700'}">${isAgent ? 'You (Tutor)' : (ticket.learner_name || 'Student')}</span>
+                    <span>•</span>
+                    <span>${timeStr}</span>
+                  </div>
+                  <div class="max-w-md px-4 py-2.5 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-2xs ${
+                    isAgent
+                      ? 'bg-emerald-600 text-white rounded-br-xs'
+                      : 'bg-white text-slate-800 border border-slate-200 rounded-bl-xs'
+                  }">
+                    ${m.content}
+                  </div>
+                </div>
+              `;
+            }).join('');
+
+            if (isScrolledToBottom) {
+              msgContainer.scrollTop = msgContainer.scrollHeight;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Error polling live chat:', err);
+      }
+    }
+
+    async function sendLiveChatMessage() {
+      if (!activeLiveTicketId) return;
+      const input = document.getElementById('liveChatMessageInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      input.value = '';
+      try {
+        const res = await fetch(`/api/v1/support/tickets/${activeLiveTicketId}/messages`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ content: text })
+        });
+        if (res.ok) {
+          await pollActiveLiveChat();
+          const cont = document.getElementById('liveChatMessagesContainer');
+          if (cont) cont.scrollTop = cont.scrollHeight;
+        } else {
+          alert('Failed to send message');
+        }
+      } catch (e) {
+        alert('Error sending message: ' + e);
+      }
+    }
+
+    function insertCannedReply(text) {
+      const input = document.getElementById('liveChatMessageInput');
+      if (input) {
+        input.value = text;
+        input.focus();
+      }
+    }
+
+    async function resolveCurrentLiveTicket() {
+      if (!activeLiveTicketId) return;
+      if (!confirm('Are you sure you want to resolve and conclude this live assistance session?')) return;
+      try {
+        const res = await fetch(`/api/v1/support/tickets/${activeLiveTicketId}/status`, {
+          method: 'PATCH',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ status: 'resolved' })
+        });
+        if (res.ok) {
+          await pollActiveLiveChat();
+          await loadTickets();
+          setTimeout(() => {
+            closeLiveChatModal();
+          }, 600);
+        }
+      } catch (e) {
+        alert('Error resolving session: ' + e);
+      }
+    }
+
+    function closeLiveChatModal() {
+      if (liveChatPollTimer) {
+        clearInterval(liveChatPollTimer);
+        liveChatPollTimer = null;
+      }
+      activeLiveTicketId = null;
+      closeModal('modalLiveChat');
+      loadTickets();
     }
 
     async function updateTicketStatus(id, newStatus) {

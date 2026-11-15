@@ -1,3 +1,4 @@
+import uuid
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -20,6 +21,26 @@ from app.services.websocket_manager import ws_manager
 router = APIRouter()
 
 
+def _to_ticket_response(ticket: SupportTicket) -> SupportTicketResponse:
+    learner_name = ticket.learner.full_name if ticket.learner and ticket.learner.full_name else (ticket.learner.email if ticket.learner else "Learner")
+    platform_name = ticket.platform.name if ticket.platform else "Platform"
+    return SupportTicketResponse(
+        id=ticket.id,
+        platform_id=ticket.platform_id,
+        learner_id=ticket.learner_id,
+        conversation_id=ticket.conversation_id,
+        assigned_agent_id=ticket.assigned_agent_id,
+        subject=ticket.subject,
+        status=ticket.status,
+        consent_share_history=ticket.consent_share_history,
+        screen_sharing_active=ticket.screen_sharing_active,
+        created_at=ticket.created_at,
+        messages=[SupportMessageResponse.model_validate(m) for m in ticket.messages],
+        learner_name=learner_name,
+        platform_name=platform_name,
+    )
+
+
 @router.post("/tickets", response_model=SupportTicketResponse, status_code=status.HTTP_201_CREATED)
 async def create_support_ticket(
     payload: SupportTicketCreate,
@@ -29,31 +50,60 @@ async def create_support_ticket(
     """
     Submits a human assistance request.
     Respects consent rules for sharing conversation history and screen sharing flag.
+    Associates request with the correct LMS platform (e.g. Savanna).
     """
     user_id = session.get("user_id")
-    platform_id = session.get("platform_id")
+    platform_id = session.get("platform_id") or payload.platform_id
+
+    # If public_key provided, resolve platform
+    if not platform_id and payload.public_key:
+        plat_res = await db.execute(
+            select(Platform).where(Platform.public_key == payload.public_key, Platform.enabled == True)
+        )
+        plat = plat_res.scalar_one_or_none()
+        if plat:
+            platform_id = plat.id
+
+    # If still not resolved, try looking for the primary platform (e.g. Savanna)
+    if not platform_id:
+        plat_res = await db.execute(
+            select(Platform.id).where(Platform.name.ilike("%savanna%")).limit(1)
+        )
+        platform_id = plat_res.scalar_one_or_none()
+        if not platform_id:
+            first_res = await db.execute(select(Platform.id).limit(1))
+            platform_id = first_res.scalar_one_or_none() or ""
 
     if not user_id:
+        learner_name = payload.learner_name.strip() if payload.learner_name else "Guest Learner"
         # Create or fetch guest user
         guest_res = await db.execute(select(User).where(User.email == "guest@bridgemate.internal"))
         guest = guest_res.scalar_one_or_none()
         if not guest:
             guest = User(
-                email="guest@bridgemate.internal", full_name="Guest Learner", role="learner"
+                email="guest@bridgemate.internal",
+                full_name=learner_name,
+                role="learner",
+                status="approved",
+                is_active=True,
             )
             db.add(guest)
             await db.flush()
+        else:
+            if payload.learner_name and guest.full_name != payload.learner_name:
+                guest.full_name = payload.learner_name
+                await db.flush()
         user_id = guest.id
 
-    if not platform_id:
-        plat_res = await db.execute(select(Platform.id).limit(1))
-        platform_id = plat_res.scalar_one_or_none() or ""
+    subject_text = payload.subject
+    if payload.page_context and not payload.subject.startswith("["):
+        subject_text = f"[{payload.page_context}] {payload.subject}"
 
     ticket = SupportTicket(
         platform_id=platform_id,
         learner_id=user_id,
         conversation_id=payload.conversation_id if payload.consent_share_history else None,
-        subject=payload.subject,
+        subject=subject_text,
         status="open",
         consent_share_history=payload.consent_share_history,
         screen_sharing_active=payload.screen_sharing_active,
@@ -73,14 +123,31 @@ async def create_support_ticket(
     await db.commit()
     await db.refresh(ticket)
 
-    # Reload with messages
+    # Reload with relations
     stmt = (
         select(SupportTicket)
-        .options(selectinload(SupportTicket.messages))
+        .options(
+            selectinload(SupportTicket.messages),
+            selectinload(SupportTicket.learner),
+            selectinload(SupportTicket.platform),
+        )
         .where(SupportTicket.id == ticket.id)
     )
     res = await db.execute(stmt)
-    return res.scalar_one()
+    full_ticket = res.scalar_one()
+
+    # Broadcast new ticket alert to platform & global support channels
+    await ws_manager.broadcast(
+        f"platform_{platform_id}",
+        {
+            "type": "new_support_ticket",
+            "ticket_id": ticket.id,
+            "subject": ticket.subject,
+            "status": "open",
+        },
+    )
+
+    return _to_ticket_response(full_ticket)
 
 
 @router.get("/tickets", response_model=list[SupportTicketResponse])
@@ -92,16 +159,24 @@ async def list_support_tickets(
     platform_id = session.get("platform_id")
     role = session.get("role", "learner")
 
-    stmt = select(SupportTicket).options(selectinload(SupportTicket.messages))
-    if role in ["admin", "support_agent"]:
+    stmt = select(SupportTicket).options(
+        selectinload(SupportTicket.messages),
+        selectinload(SupportTicket.learner),
+        selectinload(SupportTicket.platform),
+    )
+
+    # Admins, superadmins, and platform admins see tickets
+    if role in ["admin", "superadmin", "platform_admin", "support_agent"]:
         if platform_id:
+            # Scoped strictly to their assigned platform (e.g. Savanna admin only sees Savanna tickets)
             stmt = stmt.where(SupportTicket.platform_id == platform_id)
     elif user_id:
         stmt = stmt.where(SupportTicket.learner_id == user_id)
 
     stmt = stmt.order_by(SupportTicket.created_at.desc())
     res = await db.execute(stmt)
-    return res.scalars().all()
+    tickets = res.scalars().all()
+    return [_to_ticket_response(t) for t in tickets]
 
 
 @router.get("/tickets/{id}", response_model=SupportTicketResponse)
@@ -111,7 +186,11 @@ async def get_support_ticket(
 ):
     stmt = (
         select(SupportTicket)
-        .options(selectinload(SupportTicket.messages))
+        .options(
+            selectinload(SupportTicket.messages),
+            selectinload(SupportTicket.learner),
+            selectinload(SupportTicket.platform),
+        )
         .where(SupportTicket.id == id)
     )
     res = await db.execute(stmt)
@@ -120,7 +199,7 @@ async def get_support_ticket(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Support ticket not found"
         )
-    return ticket
+    return _to_ticket_response(ticket)
 
 
 @router.post("/tickets/{id}/messages", response_model=SupportMessageResponse)
@@ -140,7 +219,7 @@ async def post_support_message(
 
     user_id = session.get("user_id")
     role = session.get("role", "learner")
-    sender_role = "support_agent" if role in ["admin", "support_agent"] else "learner"
+    sender_role = "support_agent" if role in ["admin", "superadmin", "platform_admin", "support_agent"] else "learner"
 
     if not user_id:
         user_id = ticket.learner_id
@@ -173,11 +252,16 @@ async def post_support_message(
 async def update_ticket_status(
     id: str,
     payload: SupportTicketStatusUpdate,
+    session: dict = Depends(get_session_context),
     db: AsyncSession = Depends(get_db),
 ):
     stmt = (
         select(SupportTicket)
-        .options(selectinload(SupportTicket.messages))
+        .options(
+            selectinload(SupportTicket.messages),
+            selectinload(SupportTicket.learner),
+            selectinload(SupportTicket.platform),
+        )
         .where(SupportTicket.id == id)
     )
     res = await db.execute(stmt)
@@ -188,7 +272,21 @@ async def update_ticket_status(
         )
 
     ticket.status = payload.status
+    if payload.status == "in_progress" and session.get("user_id"):
+        ticket.assigned_agent_id = session.get("user_id")
+
     await db.commit()
     await db.refresh(ticket)
-    return ticket
 
+    # Broadcast status update
+    await ws_manager.broadcast(
+        f"support_{ticket.id}",
+        {
+            "type": "ticket_status_updated",
+            "ticket_id": ticket.id,
+            "status": ticket.status,
+            "assigned_agent_id": ticket.assigned_agent_id,
+        },
+    )
+
+    return _to_ticket_response(ticket)
