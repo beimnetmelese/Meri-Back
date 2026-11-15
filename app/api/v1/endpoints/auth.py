@@ -251,12 +251,14 @@ async def get_me(
     db: AsyncSession = Depends(get_db),
 ):
     assigned_plat_name = None
+    assigned_plat_public_key = None
     if current_user.assigned_platform_id:
         stmt = select(Platform).where(Platform.id == current_user.assigned_platform_id)
         res = await db.execute(stmt)
         plat = res.scalar_one_or_none()
         if plat:
             assigned_plat_name = plat.name
+            assigned_plat_public_key = plat.public_key
 
     role_normalized = "superadmin" if current_user.role in ("superadmin", "admin") else current_user.role
 
@@ -269,6 +271,7 @@ async def get_me(
         status=current_user.status,
         assigned_platform_id=current_user.assigned_platform_id,
         assigned_platform_name=assigned_plat_name,
+        assigned_platform_public_key=assigned_plat_public_key,
     )
 
 

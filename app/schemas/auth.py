@@ -44,6 +44,7 @@ class UserResponse(BaseModel):
     status: str | None = "active"
     assigned_platform_id: str | None = None
     assigned_platform_name: str | None = None
+    assigned_platform_public_key: str | None = None
 
 
 class LearnerAdminResponse(BaseModel):

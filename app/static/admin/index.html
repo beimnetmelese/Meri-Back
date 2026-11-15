@@ -667,21 +667,42 @@
       </div>
 
       <!-- Center Platform Selector (SuperAdmin) -->
-      <div id="superadminPlatformControls" class="flex items-center gap-3">
+      <div id="superadminPlatformControls" class="flex items-center gap-2 sm:gap-3">
         <label for="platformSelect" class="text-xs font-medium text-slate-600 hidden sm:inline">Active Platform:</label>
         <select id="platformSelect" onchange="onSelectPlatformChange()" class="text-sm bg-slate-100 hover:bg-slate-200/80 border border-slate-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-800">
           <option value="">Loading platforms...</option>
         </select>
+        <div class="hidden sm:flex items-center gap-1.5 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-lg text-xs font-mono">
+          <span class="text-slate-400 font-sans text-[10px] uppercase font-bold">Key:</span>
+          <span id="superadminKeyPreview" class="text-emerald-700 select-all font-semibold font-mono">pk_live_...</span>
+          <button onclick="copyCurrentPublicKey(this)" title="Copy Key" class="text-slate-400 hover:text-emerald-700 ml-1 p-0.5 rounded hover:bg-white transition">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
         <button onclick="openRegisterPlatformModal()" class="flex items-center gap-1.5 text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-3 py-1.5 rounded-lg shadow-sm transition">
           <i data-lucide="plus" class="w-3.5 h-3.5"></i>
           <span>New Platform</span>
         </button>
       </div>
 
-      <!-- Scoped Platform Admin Indicator (Platform Admin) -->
-      <div id="scopedPlatformIndicator" class="hidden flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 border border-blue-200 text-blue-900 text-xs font-bold">
-        <i data-lucide="shield" class="w-4 h-4 text-blue-600"></i>
-        <span id="scopedPlatformNameText">Managing: Platform</span>
+      <!-- Scoped Platform Admin Indicator (Platform Admin) with Public Key & 1-Click Copy -->
+      <div id="scopedPlatformIndicator" class="hidden flex flex-wrap items-center gap-2 px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-950 text-xs shadow-2xs">
+        <div class="flex items-center gap-1.5 font-bold">
+          <i data-lucide="shield-check" class="w-4 h-4 text-blue-600"></i>
+          <span id="scopedPlatformNameText">Managing: Platform</span>
+        </div>
+        <div class="h-4 w-px bg-blue-200 hidden sm:block"></div>
+        <div class="flex items-center gap-1.5 font-mono text-[11px] bg-white border border-blue-200 px-2.5 py-0.5 rounded-lg shadow-2xs">
+          <span class="text-slate-400 font-sans font-medium text-[10px]">Public Key:</span>
+          <span id="scopedPlatformKeyText" class="text-blue-700 font-bold select-all font-mono">pk_live_...</span>
+          <button onclick="copyCurrentPublicKey(this)" title="Copy Public Key" class="text-slate-400 hover:text-blue-700 ml-1 transition p-0.5 rounded hover:bg-blue-50">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+        <button onclick="copyCurrentPublicKey(this)" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 shadow-2xs transition active:scale-95">
+          <i data-lucide="copy" class="w-3 h-3"></i>
+          <span>Copy Key</span>
+        </button>
       </div>
 
       <!-- Right Admin Profile & Status -->
@@ -822,7 +843,7 @@
           <h2 class="text-xl font-bold text-slate-900">Registered Learning Platforms</h2>
           <p class="text-sm text-slate-500">Manage connected learning management systems, public embed keys, and secure server-to-server credentials.</p>
         </div>
-        <button onclick="openRegisterPlatformModal()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition">
+        <button id="btnRegisterNewPlatform" onclick="openRegisterPlatformModal()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition">
           <i data-lucide="plus-circle" class="w-4 h-4"></i>
           <span>Register New Platform</span>
         </button>
@@ -902,6 +923,38 @@
 
       <!-- Studio Notification Alert Banner for Instant Feedback -->
       <div id="studioAlertBanner" class="hidden rounded-xl p-4 border transition-all"></div>
+
+      <!-- Prominent Platform Public Key & Integration Quick-Bar -->
+      <div class="bg-gradient-to-r from-slate-900 via-slate-850 to-slate-900 rounded-2xl p-5 text-white border border-slate-700 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="space-y-1.5">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-xs uppercase font-extrabold tracking-wider text-emerald-400">Platform Embed Key</span>
+            <span id="studioActivePlatformBadge" class="bg-white/10 text-slate-200 border border-white/10 text-[10px] font-semibold px-2 py-0.5 rounded-full">Savanna LMS</span>
+          </div>
+          <p class="text-xs text-slate-300">
+            This public key connects the Meri AI widget to this platform's knowledge base, courses, live help, and custom theme.
+          </p>
+          <div class="flex items-center gap-2 pt-1 flex-wrap">
+            <div class="flex items-center bg-black/60 border border-emerald-500/40 rounded-xl px-3 py-1.5">
+              <span class="text-[10px] text-slate-400 uppercase font-sans font-bold mr-2">Key:</span>
+              <code id="studioPublicKeyDisplay" class="text-lime-300 font-mono text-xs sm:text-sm font-bold tracking-wide select-all">pk_live_savanna_sample_12345</code>
+            </div>
+            <button onclick="copyStudioPublicKey(this)" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition active:scale-95">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Copy Public Key</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="md:border-l md:border-slate-700 md:pl-5 flex flex-col justify-center space-y-1.5 shrink-0">
+          <span class="text-[11px] font-medium text-slate-400">Embed Snippet for HTML</span>
+          <button onclick="copyStudioEmbedScript(this)" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 hover:text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition active:scale-95 shadow-sm">
+            <i data-lucide="code" class="w-4 h-4 text-emerald-400"></i>
+            <span>Copy Full Script Tag</span>
+          </button>
+        </div>
+      </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <!-- Configuration Controls (Left 7 Cols) -->
@@ -1949,6 +2002,8 @@
       const approvalsBtn = document.getElementById('tab-btn-approvals');
       const platformsBtn = document.getElementById('tab-btn-platforms');
 
+      const btnRegisterNew = document.getElementById('btnRegisterNewPlatform');
+
       if (currentUser.role === 'superadmin' || currentUser.role === 'admin') {
         roleBadge.textContent = 'SUPERADMIN';
         roleBadge.className = 'hidden sm:inline-flex px-2.5 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-purple-100 text-purple-800 border border-purple-200';
@@ -1956,6 +2011,7 @@
         scopedIndicator.classList.add('hidden');
         approvalsBtn.classList.remove('hidden');
         platformsBtn.classList.remove('hidden');
+        if (btnRegisterNew) btnRegisterNew.classList.remove('hidden');
 
         // Load platforms and approvals
         await loadPlatforms();
@@ -1963,17 +2019,17 @@
         await loadApprovedAdmins();
         switchTab('approvals');
       } else {
-        // Platform Admin
+        // Platform Admin (e.g. Savanna LMS Admin)
         roleBadge.textContent = 'PLATFORM ADMIN';
         roleBadge.className = 'hidden sm:inline-flex px-2.5 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-blue-100 text-blue-800 border border-blue-200';
         superControls.classList.add('hidden');
         scopedIndicator.classList.remove('hidden');
         approvalsBtn.classList.add('hidden');
-        platformsBtn.classList.add('hidden');
-
-        document.getElementById('scopedPlatformNameText').textContent = `Managing: ${currentUser.assigned_platform_name || 'My Platform'}`;
+        platformsBtn.classList.remove('hidden'); // Kept visible so Platform Admin can access Platforms & Keys!
+        if (btnRegisterNew) btnRegisterNew.classList.add('hidden');
 
         await loadPlatforms();
+        updatePlatformKeyDisplays();
         switchTab('theming');
       }
 
@@ -2388,8 +2444,10 @@
             if (select) select.value = currentPlatform.id;
             populatePlatformConfigUI(currentPlatform.configuration);
             renderPlatforms();
+            updatePlatformKeyDisplays();
           } else {
             renderPlatforms();
+            updatePlatformKeyDisplays();
           }
         }
       } catch (e) {
@@ -2403,6 +2461,7 @@
       currentPlatform = platforms.find(p => p.id === id) || platforms[0] || null;
       if (currentPlatform) {
         populatePlatformConfigUI(currentPlatform.configuration);
+        updatePlatformKeyDisplays();
         showStudioAlert(`Active Platform Switched`, `Now editing configuration for <strong>${currentPlatform.name}</strong> (${currentPlatform.domain})`, 'info');
       }
     }
@@ -3724,32 +3783,85 @@ IMPORTANT: Save your secret key now. It will not be shown again!`);
     }
 
     function copyToClipboard(text, btnElement = null) {
+      if (!text) return;
+      const fallbackCopy = () => {
+        try {
+          const textArea = document.createElement("textarea");
+          textArea.value = text;
+          textArea.style.position = "fixed";
+          textArea.style.left = "-999999px";
+          textArea.style.top = "-999999px";
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+          document.execCommand('copy');
+          textArea.remove();
+        } catch (err) {
+          console.warn('Fallback copy error:', err);
+        }
+      };
+
       if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text);
+        navigator.clipboard.writeText(text).catch(fallbackCopy);
       } else {
-        const textArea = document.createElement("textarea");
-        textArea.value = text;
-        textArea.style.position = "fixed";
-        textArea.style.left = "-999999px";
-        textArea.style.top = "-999999px";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        document.execCommand('copy');
-        textArea.remove();
+        fallbackCopy();
       }
 
       if (btnElement) {
         const originalContent = btnElement.innerHTML;
-        btnElement.innerHTML = '<span class="text-emerald-700 font-bold text-xs inline-flex items-center gap-1"><i data-lucide="check" class="w-3.5 h-3.5"></i> Copied!</span>';
+        btnElement.innerHTML = '<span class="text-emerald-400 font-bold text-xs inline-flex items-center gap-1"><i data-lucide="check" class="w-3.5 h-3.5"></i> Copied!</span>';
         lucide.createIcons();
         setTimeout(() => {
           btnElement.innerHTML = originalContent;
           lucide.createIcons();
-        }, 2000);
+        }, 2200);
       } else {
         alert('Copied to clipboard: ' + text);
       }
+    }
+
+    function getCurrentResolvedPublicKey() {
+      if (currentPlatform && currentPlatform.public_key) return currentPlatform.public_key;
+      if (currentUser && currentUser.assigned_platform_public_key) return currentUser.assigned_platform_public_key;
+      return 'pk_live_savanna_sample_12345';
+    }
+
+    function copyCurrentPublicKey(btnElement = null) {
+      const key = getCurrentResolvedPublicKey();
+      copyToClipboard(key, btnElement);
+    }
+
+    function copyStudioPublicKey(btnElement = null) {
+      copyCurrentPublicKey(btnElement);
+    }
+
+    function copyStudioEmbedScript(btnElement = null) {
+      const key = getCurrentResolvedPublicKey();
+      copyPlatformSnippet(key, btnElement);
+    }
+
+    function updatePlatformKeyDisplays() {
+      const key = getCurrentResolvedPublicKey();
+      const name = (currentPlatform && currentPlatform.name)
+        ? currentPlatform.name
+        : (currentUser && currentUser.assigned_platform_name)
+          ? currentUser.assigned_platform_name
+          : 'Savanna LMS';
+
+      const scopedName = document.getElementById('scopedPlatformNameText');
+      if (scopedName) scopedName.textContent = `Managing: ${name}`;
+
+      const scopedKey = document.getElementById('scopedPlatformKeyText');
+      if (scopedKey) scopedKey.textContent = key;
+
+      const superKey = document.getElementById('superadminKeyPreview');
+      if (superKey) superKey.textContent = key;
+
+      const studioBadge = document.getElementById('studioActivePlatformBadge');
+      if (studioBadge) studioBadge.textContent = name;
+
+      const studioKey = document.getElementById('studioPublicKeyDisplay');
+      if (studioKey) studioKey.textContent = key;
     }
 
     function copySnippet(btnElement = null) {
